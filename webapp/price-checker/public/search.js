@@ -1,24 +1,3 @@
-function safe(v) {
-  if (v === undefined || v === null || v === "") {
-    return "0";
-  }
-  return v;
-}
-
-/* =========================
-   FORMAT NUMBER
-========================= */
-
-function formatNumber(num) {
-  const n = Number(num);
-  if (isNaN(n)) return "0";
-  return n.toLocaleString("en-US");
-}
-
-/* =========================
-   SEARCH PRODUCT (RESTORED ORIGINAL STYLE)
-========================= */
-
 async function searchProduct() {
 
   const keyword = document.getElementById("searchInput").value.trim();
@@ -44,71 +23,34 @@ async function searchProduct() {
     data.forEach(item => {
 
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card-result";
 
       card.innerHTML = `
-        <h2>📦 ${safe(item.product)}</h2>
-        <p>💰 Selling Price: ${formatNumber(item.sellPriceVND)}</p>
-        <p>📊 Profit Rate: ${safe(item.avgGrossRate)}</p>
-        <small>👉 Click to view details</small>
+        <h2>📦 ${item.product}</h2>
+        <p>💰 Sell Price (VND): ${item.sellPriceVND}</p>
+        <p>📊 Profit Rate: ${item.avgGrossRate}</p>
       `;
-
-      card.onclick = () => {
-
-        document.getElementById("modalBody").innerHTML = `
-          <h2>📦 ${safe(item.product)}</h2>
-          <hr>
-
-          <h3>💰 SELLING PRICE</h3>
-          <p>
-            VND: ${formatNumber(item.sellPriceVND)} ₫ <br>
-            USD: $${formatNumber(item.sellPriceUSD)} <br>
-            TWD: ¥${formatNumber(item.sellPriceTWD)}
-          </p>
-
-          <h3>🧾 COST PRICE</h3>
-          <p>
-            VND: ${formatNumber(item.costVND)} ₫ <br>
-            USD: $${formatNumber(item.costUSD)} <br>
-            TWD: ¥${formatNumber(item.costTWD)}
-          </p>
-
-          <h3>📈 PROFIT</h3>
-          <p>
-            VND: ${formatNumber(item.profitVND)} ₫ <br>
-            USD: $${formatNumber(item.profitUSD)} <br>
-            TWD: ¥${formatNumber(item.profitTWD)}
-          </p>
-
-          <hr>
-
-          <p>⚖️ Quantity: ${safe(item.quantity)} Kg</p>
-          <p>📊 Profit Rate: ${safe(item.avgGrossRate)}</p>
-        `;
-
-        document.getElementById("modal").style.display = "block";
-      };
 
       resultDiv.appendChild(card);
     });
 
   } catch (err) {
     console.error(err);
-    alert("Search error from server");
+    alert("Search error");
   }
 }
 
 
 /* =========================
-   ⭐ AUTOCOMPLETE (RESTORED)
+   AUTOCOMPLETE
 ========================= */
 
 async function getSuggest() {
 
-  const keyword = document.getElementById("searchInput").value.trim();
+  const keyword = document.getElementById("searchInput").value;
   const box = document.getElementById("suggestBox");
 
-  if (!keyword) {
+  if (!keyword.trim()) {
     box.innerHTML = "";
     return;
   }
@@ -133,11 +75,6 @@ async function getSuggest() {
     console.log(err);
   }
 }
-
-
-/* =========================
-   SELECT SUGGEST
-========================= */
 
 function selectSuggest(name) {
   document.getElementById("searchInput").value = name;
