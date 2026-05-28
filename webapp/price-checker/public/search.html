@@ -1,100 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Price Checker - Search</title>
+<title>Price Checker</title>
 
 <link rel="stylesheet" href="style.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
 <style>
-
-/* ================= BACKGROUND ================= */
+/* ================= GLOBAL ================= */
 body{
   margin:0;
   font-family:"Poppins", sans-serif;
+  background: linear-gradient(135deg, #0f172a, #020617);
   color:white;
-
-  background:
-    radial-gradient(circle at 20% 20%, #1e293b, transparent 40%),
-    radial-gradient(circle at 80% 80%, #0ea5e9, transparent 35%),
-    linear-gradient(135deg, #020617, #0f172a);
 }
 
-/* ================= NAVBAR ================= */
-.navbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 30px;
-
-  background: rgba(15,23,42,0.75);
-  backdrop-filter: blur(14px);
-
+/* ================= HEADER ================= */
+header{
+  padding:16px 30px;
+  background: rgba(15,23,42,0.7);
+  backdrop-filter: blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
   position:sticky;
   top:0;
-  z-index:1000;
-
-  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-.navbar a{
-  color:white;
-  text-decoration:none;
-  margin-left:20px;
-  opacity:0.7;
-  transition:0.2s;
-  font-size:14px;
+header h2{
+  margin:0;
+  font-size:18px;
+  letter-spacing:1px;
 }
 
-.navbar a:hover{
-  opacity:1;
-  color:#38bdf8;
-}
-
-/* ================= CONTAINER ================= */
-.page-wrapper{
-  max-width:900px;
-  margin:40px auto;
-  padding:20px;
-}
-
-.panel{
-  background: rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:20px;
-  padding:25px;
-
-  backdrop-filter: blur(16px);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-  animation: fadeUp 0.4s ease;
-}
-
-/* ================= SEARCH ================= */
+/* ================= SEARCH BOX ================= */
 .search-box{
+  max-width:800px;
+  margin:40px auto 20px;
   display:flex;
   gap:10px;
   position:relative;
-  margin-bottom:20px;
+  animation: fadeUp 0.5s ease;
 }
 
 .search-box input{
   flex:1;
   padding:14px 16px;
-  border-radius:14px;
+  border-radius:12px;
   border:none;
   outline:none;
-
   background: rgba(255,255,255,0.08);
   color:white;
+  backdrop-filter: blur(10px);
 }
 
 .search-box button{
   padding:14px 18px;
   border:none;
-  border-radius:14px;
-
+  border-radius:12px;
   background:#38bdf8;
   color:black;
   font-weight:600;
@@ -103,8 +66,7 @@ body{
 }
 
 .search-box button:hover{
-  transform:translateY(-2px);
-  background:#0ea5e9;
+  transform:scale(1.05);
 }
 
 /* ================= SUGGEST ================= */
@@ -115,13 +77,14 @@ body{
   right:0;
 
   background: rgba(15,23,42,0.95);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:12px;
+  backdrop-filter: blur(12px);
 
-  backdrop-filter: blur(10px);
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.1);
 
   z-index:9999;
-  max-height:220px;
+
+  max-height:240px;
   overflow-y:auto;
 }
 
@@ -129,120 +92,62 @@ body{
   padding:10px;
   cursor:pointer;
   transition:0.2s;
-  font-size:14px;
+  font-size:13px;
 }
 
 .suggest-item:hover{
-  background: rgba(56,189,248,0.15);
+  background: rgba(56,189,248,0.2);
 }
 
 /* ================= RESULT ================= */
-.card-result{
-  margin-top:15px;
-  padding:15px;
-  border-radius:14px;
-
-  background: rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);
-
-  transition:0.2s;
-}
-
-.card-result:hover{
-  transform:translateY(-3px);
-}
-
-/* ================= FOOTER NAV ================= */
-.search-footer{
-  position:fixed;
-  bottom:18px;
-  left:50%;
-  transform:translateX(-50%);
-
-  display:flex;
-  gap:25px;
-
-  padding:10px 18px;
-
-  background: rgba(15,23,42,0.75);
-  backdrop-filter: blur(14px);
-
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:16px;
-}
-
-.search-footer a{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-
-  text-decoration:none;
-  color:white;
-  font-size:12px;
-  opacity:0.7;
-  transition:0.2s;
-  width:70px;
-}
-
-.search-footer a:hover{
-  opacity:1;
-  color:#38bdf8;
+#result{
+  max-width:800px;
+  margin:0 auto;
+  padding:10px 20px 50px;
 }
 
 /* ================= ANIMATION ================= */
 @keyframes fadeUp{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:translateY(0);}
+  from{
+    opacity:0;
+    transform:translateY(15px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
-
 </style>
+
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-  <div><b>PRICE CHECKER</b></div>
-  <div>
-    <a href="/index.html">Home</a>
-    <a href="/upload.html">Upload</a>
-  </div>
-</div>
+<header>
+  <h2>📊 PRICE CHECKER</h2>
+</header>
 
-<!-- MAIN -->
-<div class="page-wrapper">
-  <div class="panel">
+<!-- SEARCH -->
+<div class="search-box">
 
-    <h2>Search Products</h2>
+  <input
+    id="searchInput"
+    oninput="getSuggest()"
+    placeholder="Enter product name..."
+  />
 
-    <div class="search-box">
-      <input id="searchInput" oninput="getSuggest()" placeholder="Enter product name..." />
-      <button onclick="searchProduct()">SEARCH</button>
+  <button onclick="searchProduct()">
+    SEARCH
+  </button>
 
-      <div id="suggestBox"></div>
-    </div>
-
-    <div id="result"></div>
-
-  </div>
-</div>
-
-<!-- FOOTER -->
-<div class="search-footer">
-
-  <a href="/index.html">
-    <span>🏠</span>
-    <span>Home</span>
-  </a>
-
-  <a href="/upload.html">
-    <span>⬆️</span>
-    <span>Upload</span>
-  </a>
+  <div id="suggestBox"></div>
 
 </div>
 
-<script src="script.js"></script>
+<!-- RESULT -->
+<div id="result"></div>
+
+<script src="search.js"></script>
 
 </body>
 </html>
