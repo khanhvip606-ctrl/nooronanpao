@@ -1349,3 +1349,73 @@ body{
   font-weight:600;
 
 }
+
+/* =========================
+   AUTOCOMPLETE WRAPPER
+========================= */
+
+.search-box {
+  position: relative;
+}
+
+/* =========================
+   SUGGEST BOX DROPDOWN
+========================= */
+
+#suggestBox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  background-color: #ffffff;
+  color: #000000;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  margin-top: 5px;
+
+  z-index: 9999;
+
+  max-height: 250px;
+  overflow-y: auto;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   SUGGEST ITEM
+========================= */
+
+.suggest-item {
+  padding: 12px;
+  cursor: pointer;
+
+  font-size: 14px;
+
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* hover effect */
+.suggest-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* =========================
+   SCROLL BAR (OPTIONAL)
+========================= */
+
+#suggestBox::-webkit-scrollbar {
+  width: 6px;
+}
+
+#suggestBox::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}
+
+#suggestBox::-webkit-scrollbar-track {
+  background-color: transparent;
+}
