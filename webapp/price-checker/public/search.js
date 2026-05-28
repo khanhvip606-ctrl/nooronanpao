@@ -10,7 +10,7 @@ function formatNumber(num) {
 }
 
 /* =========================
-   SEARCH PRODUCT (RESTORED + FIXED)
+   SEARCH PRODUCT (FINAL FIX)
 ========================= */
 
 async function searchProduct() {
@@ -37,12 +37,15 @@ async function searchProduct() {
       return;
     }
 
-    data.forEach((item) => {
+    data.forEach((item, index) => {
+
+      const detailId = "detail-" + index;
+
       const card = document.createElement("div");
       card.className = "card-result fade-in";
 
       card.innerHTML = `
-        <h2>📦 ${safe(item.product)}</h2>
+        <h2>${safe(item.product)}</h2>
 
         <div class="result-row">
           <div class="result-label">Selling Price (VND)</div>
@@ -55,64 +58,56 @@ async function searchProduct() {
         </div>
 
         <div class="result-row">
-          <div class="result-label">Click</div>
-          <div class="result-value">View details</div>
+          <div class="result-label">Click for details</div>
+          <div class="result-value">▶</div>
+        </div>
+
+        <!-- DETAIL BOX -->
+        <div id="${detailId}" style="display:none; margin-top:20px;">
+
+          <div class="result-row">
+            <div class="result-label">Selling Price (USD)</div>
+            <div class="result-value">$${formatNumber(item.sellPriceUSD)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Selling Price (TWD)</div>
+            <div class="result-value">${formatNumber(item.sellPriceTWD)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Cost</div>
+            <div class="result-value">${formatNumber(item.costVND)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Profit</div>
+            <div class="result-value">${formatNumber(item.profitVND)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Quantity</div>
+            <div class="result-value">${safe(item.quantity)} Kg</div>
+          </div>
+
         </div>
       `;
 
-      card.onclick = () => {
-        const modalBody = document.getElementById("modalBody");
+      card.addEventListener("click", () => {
+        const detail = document.getElementById(detailId);
 
-        modalBody.innerHTML = `
-          <h2>📦 ${safe(item.product)}</h2>
-          <hr>
+        if (!detail) return;
 
-          <h3>SELLING PRICE</h3>
-          <p>
-            VND: ${formatNumber(item.sellPriceVND)} ₫ <br>
-            USD: $${formatNumber(item.sellPriceUSD)} <br>
-            TWD: ¥${formatNumber(item.sellPriceTWD)}
-          </p>
-
-          <h3>COST PRICE</h3>
-          <p>
-            VND: ${formatNumber(item.costVND)} ₫ <br>
-            USD: $${formatNumber(item.costUSD)} <br>
-            TWD: ¥${formatNumber(item.costTWD)}
-          </p>
-
-          <h3>PROFIT</h3>
-          <p>
-            VND: ${formatNumber(item.profitVND)} ₫ <br>
-            USD: $${formatNumber(item.profitUSD)} <br>
-            TWD: ¥${formatNumber(item.profitTWD)}
-          </p>
-
-          <hr>
-
-          <p>Quantity: ${formatNumber(item.quantity)} Kg</p>
-          <p>Profit Rate: ${safe(item.avgGrossRate)}</p>
-        `;
-
-        document.getElementById("modal").style.display = "block";
-      };
+        if (detail.style.display === "block") {
+          detail.style.display = "none";
+        } else {
+          detail.style.display = "block";
+        }
+      });
 
       resultDiv.appendChild(card);
     });
 
-    // modal close (safe init)
-    const closeBtn = document.getElementById("closeModal");
-    if (closeBtn) {
-      closeBtn.onclick = () => {
-        document.getElementById("modal").style.display = "none";
-      };
-    }
-
-    window.onclick = (e) => {
-      if (e.target.id === "modal") {
-        document.getElementById("modal").style.display = "none";
-      }
-    };
   } catch (err) {
     console.error(err);
     alert("Search error");
@@ -120,7 +115,7 @@ async function searchProduct() {
 }
 
 /* =========================
-   AUTOCOMPLETE (FIXED)
+   AUTOCOMPLETE / SUGGEST
 ========================= */
 
 async function getSuggest() {
@@ -141,16 +136,23 @@ async function getSuggest() {
       return;
     }
 
-    box.innerHTML = data
-      .map(
-        (item) =>
-          `<div class="suggest-item" onclick="selectSuggest('${item}')">🔎 ${item}</div>`
-      )
-      .join("");
+    box.innerHTML = data.map(item => {
+      const safeItem = String(item).replace(/'/g, "\\'");
+      return `
+        <div class="suggest-item" onclick="selectSuggest('${safeItem}')">
+          🔎 ${item}
+        </div>
+      `;
+    }).join("");
+
   } catch (err) {
-    console.log("suggest error", err);
+    console.log("suggest error:", err);
   }
 }
+
+/* =========================
+   SELECT SUGGEST
+========================= */
 
 function selectSuggest(name) {
   document.getElementById("searchInput").value = name;
