@@ -1,9 +1,9 @@
+
 async function searchProduct() {
   const keyword = document.getElementById("searchInput").value;
 
   try {
 
-    // ❗ FIX RENDER: bỏ localhost
     const res = await fetch(`/search?name=${encodeURIComponent(keyword)}`);
 
     const data = await res.json();
@@ -12,7 +12,7 @@ async function searchProduct() {
     resultDiv.innerHTML = "";
 
     if (!data || data.length === 0) {
-      resultDiv.innerHTML = "<h3>Không tìm thấy sản phẩm</h3>";
+      resultDiv.innerHTML = "<h3>No products found</h3>";
       return;
     }
 
@@ -23,9 +23,9 @@ async function searchProduct() {
 
       card.innerHTML = `
         <h2>📦 ${item.product}</h2>
-        <p>💰 VND: ${item.sellPriceVND}</p>
-        <p>📊 Rate: ${item.avgGrossRate}</p>
-        <small>👉 Click để xem chi tiết</small>
+        <p>💰 Selling Price: ${item.sellPriceVND}</p>
+        <p>📊 Profit Rate: ${item.avgGrossRate}</p>
+        <small>👉 Click to view details</small>
       `;
 
       card.onclick = () => {
@@ -33,21 +33,21 @@ async function searchProduct() {
           <h2>📦 ${item.product}</h2>
           <hr>
 
-          <h3>💰 GIÁ BÁN</h3>
+          <h3>💰 SELLING PRICE</h3>
           <p>
             VND: ${item.sellPriceVND} ₫ <br>
             USD: $${item.sellPriceUSD} <br>
             TWD: ¥${item.sellPriceTWD}
           </p>
 
-          <h3>🧾 GIÁ VỐN</h3>
+          <h3>🧾 COST PRICE</h3>
           <p>
             VND: ${item.costVND} ₫ <br>
             USD: $${item.costUSD} <br>
             TWD: ¥${item.costTWD}
           </p>
 
-          <h3>📈 LỢI NHUẬN</h3>
+          <h3>📈 PROFIT</h3>
           <p>
             VND: ${item.profitVND} ₫ <br>
             USD: $${item.profitUSD} <br>
@@ -57,7 +57,7 @@ async function searchProduct() {
           <hr>
 
           <p>⚖️ Quantity: ${item.quantity} Kg</p>
-          <p>📊 Rate: ${item.avgGrossRate}</p>
+          <p>📊 Profit Rate: ${item.avgGrossRate}</p>
         `;
 
         document.getElementById("modal").style.display = "block";
@@ -78,7 +78,7 @@ async function searchProduct() {
 
   } catch (err) {
     console.error(err);
-    alert("Search lỗi server");
+    alert("Search error from server");
   }
 }
 
@@ -102,7 +102,6 @@ async function getSuggest() {
 
   try {
 
-    // ❗ FIX RENDER: bỏ localhost
     const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
 
     const data = await res.json();
@@ -122,6 +121,11 @@ async function getSuggest() {
     console.log("SUGGEST ERROR:", err);
   }
 }
+
+
+/* =========================
+   SELECT SUGGEST
+========================= */
 
 function selectSuggest(name) {
 
