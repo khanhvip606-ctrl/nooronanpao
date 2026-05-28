@@ -5,52 +5,45 @@
 
 <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <title>Price Checker</title>
 
-<link
-rel="stylesheet"
-href="style.css"
-/>
+<link rel="stylesheet" href="style.css"/>
 
-<link
-rel="preconnect"
-href="https://fonts.googleapis.com"
-/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
 
-<link
-rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin
-/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet"
-/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
 <style>
 
-/* ===== AUTOCOMPLETE FIX ===== */
+/* =========================
+   AUTOCOMPLETE BOX
+========================= */
 
 #suggestBox {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
+
   background: white;
+  color: black;
+
   border: 1px solid #ddd;
   border-radius: 8px;
+
   z-index: 9999;
+
   max-height: 220px;
   overflow-y: auto;
+
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
+/* ITEM */
 .suggest-item {
   padding: 10px;
   cursor: pointer;
@@ -62,7 +55,7 @@ rel="stylesheet"
   background: #f3f3f3;
 }
 
-/* ⭐ THÊM FIX QUAN TRỌNG (KHÔNG PHÁ CODE) */
+/* FIX QUAN TRỌNG */
 .search-box {
   position: relative;
 }
@@ -83,17 +76,11 @@ NOOROO NANPAO
 
 <nav>
 
-<a href="/index.html">
-Home
-</a>
+<a href="/index.html">Home</a>
 
-<a href="/upload.html">
-Upload
-</a>
+<a href="/upload.html">Upload</a>
 
-<a href="/search.html" class="active">
-Search
-</a>
+<a href="/search.html" class="active">Search</a>
 
 </nav>
 
@@ -103,9 +90,7 @@ Search
 
 <div class="search-header">
 
-<h1>
-PRICE CHECKER
-</h1>
+<h1>PRICE CHECKER</h1>
 
 <p>
 Search products, profit, cost and currency conversion in real time.
@@ -117,7 +102,7 @@ Search products, profit, cost and currency conversion in real time.
      SEARCH BOX
 ========================= -->
 
-<div class="search-box" style="position:relative;">
+<div class="search-box">
 
 <input
 type="text"
@@ -130,7 +115,7 @@ oninput="getSuggest()"
 SEARCH
 </button>
 
-<!-- AUTOCOMPLETE BOX -->
+<!-- AUTOCOMPLETE -->
 <div id="suggestBox"></div>
 
 </div>
@@ -140,7 +125,12 @@ SEARCH
 
 </main>
 
+<!-- =========================
+   JS FILES
+========================= -->
+
 <script src="script.js"></script>
+<script src="search.js"></script>
 
 </body>
 
