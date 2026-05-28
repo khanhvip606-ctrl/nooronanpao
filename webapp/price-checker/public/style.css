@@ -1427,15 +1427,20 @@ body{
 }
 
 /* scrollbar ngang */
-#suggestBox::-webkit-scrollbar {
-  height: 6px;
-}
+#suggestBox{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
 
-#suggestBox::-webkit-scrollbar-thumb {
-  background: #38bdf8;
+  background: #0f172a;   /* ❌ bỏ trắng → đổi dark */
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
-}
 
-#suggestBox::-webkit-scrollbar-track {
-  background: transparent;
+  z-index: 99999; /* 🔥 luôn nổi trên card */
+
+  max-height: 220px;
+  overflow-y: auto;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
