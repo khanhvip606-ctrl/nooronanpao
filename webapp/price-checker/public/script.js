@@ -1,3 +1,4 @@
+
 function safe(v) {
 
   if (
@@ -22,11 +23,10 @@ function formatNumber(num) {
   if (isNaN(n)) return "0";
 
   return n.toLocaleString("en-US");
-
 }
 
 /* =========================
-   SEARCH PRODUCT (FIXED)
+   SEARCH PRODUCT
 ========================= */
 
 async function searchProduct() {
@@ -35,20 +35,18 @@ async function searchProduct() {
     document.getElementById("searchInput").value.trim();
 
   if (!keyword || keyword.length < 2) {
-
-    alert("Nhập ít nhất 2 ký tự");
-
+    alert("Please enter at least 2 characters");
     return;
   }
 
-  console.log("SEARCH CLICK:", keyword);
+  console.log("SEARCH:", keyword);
 
   const resultDiv =
     document.getElementById("result");
 
   resultDiv.innerHTML = `
     <div class="card-result">
-      <h2>⏳ Đang tìm kiếm...</h2>
+      <h2>Searching...</h2>
     </div>
   `;
 
@@ -60,15 +58,13 @@ async function searchProduct() {
     const data =
       await res.json();
 
-    console.log("SEARCH RESULT:", data);
-
     resultDiv.innerHTML = "";
 
     if (!data || data.length === 0) {
 
       resultDiv.innerHTML = `
         <div class="card-result fade-in">
-          <h2>❌ Không tìm thấy sản phẩm</h2>
+          <h2>No products found</h2>
         </div>
       `;
 
@@ -83,14 +79,14 @@ async function searchProduct() {
           <h2>${safe(item.product)}</h2>
 
           <div class="result-row">
-            <div class="result-label">Giá bán (VND)</div>
+            <div class="result-label">Selling Price (VND)</div>
             <div class="result-value">
               ${formatNumber(item.sellPriceVND)}
             </div>
           </div>
 
           <div class="result-row">
-            <div class="result-label">Giá bán (USD)</div>
+            <div class="result-label">Selling Price (USD)</div>
             <div class="result-value">
               $ ${formatNumber(item.sellPriceUSD)}
             </div>
@@ -104,21 +100,21 @@ async function searchProduct() {
           </div>
 
           <div class="result-row">
-            <div class="result-label">Giá vốn / Unit</div>
+            <div class="result-label">Cost per Unit</div>
             <div class="result-value">
               ${formatNumber(item.avgCost)}
             </div>
           </div>
 
           <div class="result-row">
-            <div class="result-label">Lợi nhuận gộp</div>
+            <div class="result-label">Gross Profit</div>
             <div class="result-value">
               ${formatNumber(item.avgGrossProfit)}
             </div>
           </div>
 
           <div class="result-row">
-            <div class="result-label">Tỷ lệ lợi nhuận gộp</div>
+            <div class="result-label">Gross Profit Rate</div>
             <div class="result-value">
               ${safe(item.avgGrossRate)}
             </div>
@@ -137,7 +133,7 @@ async function searchProduct() {
 
     document.getElementById("result").innerHTML = `
       <div class="card-result">
-        <h2>❌ Lỗi server khi tìm kiếm</h2>
+        <h2>Server Error</h2>
       </div>
     `;
 
@@ -145,60 +141,57 @@ async function searchProduct() {
 }
 
 /* =========================
-   UPLOAD EXCEL
+   AUTOCOMPLETE (RESTORED + FIXED)
 ========================= */
 
-async function uploadExcel() {
+async function getSuggest() {
 
-  const fileInput =
-    document.getElementById("excelFile");
+  const keyword =
+    document.getElementById("searchInput").value.trim();
 
-  const msg =
-    document.getElementById("uploadStatus");
+  const box =
+    document.getElementById("suggestBox");
 
-  const file =
-    fileInput.files[0];
-
-  if (!file) {
-
-    msg.style.display = "block";
-    msg.className = "error";
-    msg.innerText = "❌ Chưa chọn file Excel";
-
+  if (!keyword) {
+    box.innerHTML = "";
     return;
   }
 
-  const formData =
-    new FormData();
-
-  formData.append("excel", file);
-
   try {
 
-    msg.style.display = "block";
-    msg.className = "";
-    msg.innerText = "⏳ Đang upload file...";
-
     const res =
-      await fetch("/upload", {
-        method: "POST",
-        body: formData,
-      });
+      await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
 
     const data =
       await res.json();
 
-    msg.className = "success";
+    if (!data || data.length === 0) {
+      box.innerHTML = "";
+      return;
+    }
 
-    msg.innerText =
-      "✅ Upload thành công " + data.total + " dòng dữ liệu";
+    box.innerHTML = data.map(item => `
+      <div class="suggest-item" onclick="selectSuggest('${item}')">
+        🔎 ${item}
+      </div>
+    `).join("");
 
   } catch (err) {
-
-    msg.className = "error";
-    msg.innerText = "❌ Upload thất bại";
-
+    console.log("SUGGEST ERROR:", err);
   }
+}
+
+/* =========================
+   SELECT SUGGEST
+========================= */
+
+function selectSuggest(name) {
+
+  document.getElementById("searchInput").value = name;
+
+  document.getElementById("suggestBox").innerHTML = "";
+
+  searchProduct();
 }
 
 /* =========================
@@ -224,7 +217,7 @@ function login() {
     localStorage.setItem("loggedIn", "true");
 
     msg.style.color = "#22c55e";
-    msg.innerText = "✅ Login successful";
+    msg.innerText = "Login successful";
 
     setTimeout(() => {
       window.location.href = "/";
@@ -233,14 +226,13 @@ function login() {
   } else {
 
     msg.style.color = "#ef4444";
-    msg.innerText = "❌ Wrong username or password";
+    msg.innerText = "Wrong username or password";
 
   }
-
 }
 
 /* =========================
-   CHECK LOGIN
+   LOGIN CHECK
 ========================= */
 
 const loggedIn =
