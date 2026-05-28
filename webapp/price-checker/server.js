@@ -33,40 +33,11 @@ app.get("/", (req, res) => {
 });
 
 /* =========================
-   MULTER STORAGE
+   MULTER STORAGE (FIX RENDER)
 ========================= */
 
-const storage = multer.diskStorage({
-
-  destination: function (
-    req,
-    file,
-    cb
-  ) {
-
-    cb(
-      null,
-      "uploads/"
-    );
-
-  },
-
-  filename: function (
-    req,
-    file,
-    cb
-  ) {
-
-    cb(
-      null,
-      Date.now() +
-      "-" +
-      file.originalname
-    );
-
-  },
-
-});
+/* ❗ FIX 1: chuyển sang memoryStorage */
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage
@@ -79,7 +50,7 @@ const upload = multer({
 let products = [];
 
 /* =========================
-   UPLOAD EXCEL
+   UPLOAD EXCEL (FIX RENDER)
 ========================= */
 
 app.post(
@@ -89,9 +60,11 @@ app.post(
 
     try {
 
+      /* ❗ FIX 2: đọc buffer thay vì file.path */
       const workbook =
-      XLSX.readFile(
-        req.file.path
+      XLSX.read(
+        req.file.buffer,
+        { type: "buffer" }
       );
 
       const sheetName =
