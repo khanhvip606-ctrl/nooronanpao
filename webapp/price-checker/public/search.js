@@ -1,111 +1,150 @@
+function safe(v) {
+  if (v === undefined || v === null || v === "") return "0";
+  return v;
+}
+
+function formatNumber(num) {
+  const n = Number(num);
+  if (isNaN(n)) return "0";
+  return n.toLocaleString("en-US");
+}
+
 /* =========================
-   UPLOAD EXCEL
+   SEARCH PRODUCT
 ========================= */
 
-async function uploadExcel() {
+async function searchProduct() {
 
-  const fileInput = document.getElementById("excelFile");
-  const msg = document.getElementById("uploadStatus");
+  const keyword = document.getElementById("searchInput").value.trim();
 
-  if (!fileInput || !msg) return;
-
-  const file = fileInput.files[0];
-
-  if (!file) {
-    msg.style.display = "block";
-    msg.className = "error";
-    msg.innerText = "❌ Please select file";
+  if (!keyword) {
+    alert("Enter product name");
     return;
   }
 
-  const formData = new FormData();
-  formData.append("excel", file);
-
   try {
 
-    msg.style.display = "block";
-    msg.className = "";
-    msg.innerText = "Uploading...";
-
-    const res = await fetch("/upload", {
-      method: "POST",
-      body: formData,
-    });
-
+    const res = await fetch(`/search?name=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
-    msg.className = "success";
-    msg.innerText = "Upload success: " + (data.total || 0) + " rows";
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      resultDiv.innerHTML = "<h3>No products found</h3>";
+      return;
+    }
+
+    data.forEach(item => {
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <h2>📦 ${item.product}</h2>
+        <p>💰 Selling Price: ${item.sellPriceVND}</p>
+        <p>📊 Profit Rate: ${item.avgGrossRate}</p>
+        <small>👉 Click to view details</small>
+      `;
+
+      card.onclick = () => {
+
+        document.getElementById("modalBody").innerHTML = `
+          <h2>📦 ${item.product}</h2>
+          <hr>
+
+          <h3>💰 SELLING PRICE</h3>
+          <p>
+            VND: ${item.sellPriceVND} ₫ <br>
+            USD: $${item.sellPriceUSD} <br>
+            TWD: ¥${item.sellPriceTWD}
+          </p>
+
+          <h3>🧾 COST PRICE</h3>
+          <p>
+            VND: ${item.costVND} ₫ <br>
+            USD: $${item.costUSD} <br>
+            TWD: ¥${item.costTWD}
+          </p>
+
+          <h3>📈 PROFIT</h3>
+          <p>
+            VND: ${item.profitVND} ₫ <br>
+            USD: $${item.profitUSD} <br>
+            TWD: ¥${item.profitTWD}
+          </p>
+
+          <hr>
+
+          <p>⚖️ Quantity: ${item.quantity} Kg</p>
+          <p>📊 Profit Rate: ${item.avgGrossRate}</p>
+        `;
+
+        document.getElementById("modal").style.display = "block";
+      };
+
+      resultDiv.appendChild(card);
+    });
+
+    document.getElementById("closeModal").onclick = () => {
+      document.getElementById("modal").style.display = "none";
+    };
+
+    window.onclick = (e) => {
+      if (e.target.id === "modal") {
+        document.getElementById("modal").style.display = "none";
+      }
+    };
 
   } catch (err) {
     console.error(err);
-    msg.className = "error";
-    msg.innerText = "Upload failed";
+    alert("Search error from server");
   }
 }
 
 
 /* =========================
-   LOGIN
+   AUTOCOMPLETE / SUGGEST
 ========================= */
 
-function login() {
+async function getSuggest() {
 
-  const username = document.getElementById("username")?.value?.trim();
-  const password = document.getElementById("password")?.value?.trim();
-  const msg = document.getElementById("loginMsg");
+  const keyword = document.getElementById("searchInput").value;
+  const box = document.getElementById("suggestBox");
 
-  if (!msg) return;
+  if (!keyword || keyword.trim() === "") {
+    box.innerHTML = "";
+    return;
+  }
 
-  if (
-    username === "nooronanpao" &&
-    password === "nooronanpaonhontrach"
-  ) {
+  try {
 
-    localStorage.setItem("loggedIn", "true");
+    const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
+    const data = await res.json();
 
-    msg.style.color = "#22c55e";
-    msg.innerText = "Login success";
+    if (!data || data.length === 0) {
+      box.innerHTML = "";
+      return;
+    }
 
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 800);
+    box.innerHTML = data.map(item => `
+      <div class="suggest-item" onclick="selectSuggest('${item}')">
+        🔎 ${item}
+      </div>
+    `).join("");
 
-  } else {
-
-    msg.style.color = "#ef4444";
-    msg.innerText = "Wrong username or password";
+  } catch (err) {
+    console.log("SUGGEST ERROR:", err);
   }
 }
 
 
 /* =========================
-   CHECK LOGIN (SAFE)
+   SELECT SUGGEST
 ========================= */
 
-(function checkLogin() {
-
-  const loggedIn = localStorage.getItem("loggedIn");
-  const currentPage = window.location.pathname;
-
-  if (loggedIn !== "true") {
-    if (!currentPage.includes("login.html")) {
-      window.location.href = "/login.html";
-    }
-  } else {
-    if (currentPage.includes("login.html")) {
-      window.location.href = "/";
-    }
-  }
-
-})();
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-function logout() {
-  localStorage.removeItem("loggedIn");
-  window.location.href = "/login.html";
+function selectSuggest(name) {
+  document.getElementById("searchInput").value = name;
+  document.getElementById("suggestBox").innerHTML = "";
+  searchProduct();
 }
