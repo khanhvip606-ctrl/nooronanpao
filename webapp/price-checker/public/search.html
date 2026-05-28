@@ -33,6 +33,35 @@ href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&
 rel="stylesheet"
 />
 
+<style>
+/* ===== AUTOCOMPLETE FIX ===== */
+
+#suggestBox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  z-index: 9999;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.suggest-item {
+  padding: 10px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  transition: 0.2s;
+}
+
+.suggest-item:hover {
+  background: #f3f3f3;
+}
+</style>
+
 </head>
 
 <body class="search-page">
@@ -78,7 +107,7 @@ Search products, profit, cost and currency conversion in real time.
 </div>
 
 <!-- =========================
-     SEARCH BOX + AUTOCOMPLETE
+     SEARCH BOX
 ========================= -->
 
 <div class="search-box" style="position:relative;">
