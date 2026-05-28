@@ -1,154 +1,65 @@
-function safe(v) {
-  if (v === undefined || v === null || v === "") return "0";
-  return v;
-}
-
-function formatNumber(num) {
-  const n = Number(num);
-  if (isNaN(n)) return "0";
-  return n.toLocaleString("en-US");
-}
-
-/* =========================
-   SEARCH PRODUCT (STABLE FIX)
-========================= */
-
 async function searchProduct() {
   const keyword = document.getElementById("searchInput").value.trim();
 
   if (!keyword) {
-    alert("Enter product name");
+    alert("Nhập tên sản phẩm");
     return;
   }
+
+  const resultDiv = document.getElementById("result");
+
+  resultDiv.innerHTML = `
+    <div class="card-result fade-in">
+      <h2>⏳ Đang tìm kiếm...</h2>
+    </div>
+  `;
 
   try {
     const res = await fetch(`/search?name=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
-    const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "";
 
-    console.log("SEARCH RESULT:", data);
-
-    if (!Array.isArray(data) || data.length === 0) {
+    if (!data || data.length === 0) {
       resultDiv.innerHTML = `
         <div class="card-result">
-          <h2>No products found</h2>
+          <h2>❌ Không tìm thấy sản phẩm</h2>
         </div>
       `;
       return;
     }
 
-    data.forEach((item, index) => {
+    let html = "";
 
-      const detailId = `detail-${index}`;
+    data.forEach(item => {
+      html += `
+        <div class="card-result fade-in">
 
-      const card = document.createElement("div");
-      card.className = "card-result fade-in";
+          <h2>📦 ${item.product}</h2>
 
-      card.innerHTML = `
-        <h2>${safe(item.product)}</h2>
-
-        <div class="result-row">
-          <div class="result-label">Selling Price (VND)</div>
-          <div class="result-value">${formatNumber(item.sellPriceVND)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Profit Rate</div>
-          <div class="result-value">${safe(item.avgGrossRate)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Click for details</div>
-          <div class="result-value">▶</div>
-        </div>
-
-        <div id="${detailId}" style="display:none; margin-top:15px;">
           <div class="result-row">
-            <div class="result-label">USD</div>
-            <div class="result-value">$${formatNumber(item.sellPriceUSD)}</div>
+            <div class="result-label">Giá bán</div>
+            <div class="result-value">${item.sellPriceVND}</div>
           </div>
 
           <div class="result-row">
-            <div class="result-label">TWD</div>
-            <div class="result-value">${formatNumber(item.sellPriceTWD)}</div>
+            <div class="result-label">Lợi nhuận</div>
+            <div class="result-value">${item.avgGrossRate}</div>
           </div>
 
-          <div class="result-row">
-            <div class="result-label">Cost</div>
-            <div class="result-value">${formatNumber(item.costVND)}</div>
-          </div>
+          <button class="login-btn" style="margin-top:15px"
+            onclick='openDetail(${JSON.stringify(item)})'>
+            Xem chi tiết
+          </button>
 
-          <div class="result-row">
-            <div class="result-label">Profit</div>
-            <div class="result-value">${formatNumber(item.profitVND)}</div>
-          </div>
-
-          <div class="result-row">
-            <div class="result-label">Quantity</div>
-            <div class="result-value">${safe(item.quantity)} Kg</div>
-          </div>
         </div>
       `;
-
-      card.addEventListener("click", () => {
-        const detail = document.getElementById(detailId);
-        if (!detail) return;
-
-        detail.style.display =
-          detail.style.display === "block" ? "none" : "block";
-      });
-
-      resultDiv.appendChild(card);
     });
 
-  } catch (err) {
-    console.error("SEARCH ERROR:", err);
-    alert("Search error");
-  }
-}
-
-/* =========================
-   AUTOCOMPLETE (SAFE FIX)
-========================= */
-
-async function getSuggest() {
-  const keyword = document.getElementById("searchInput").value;
-  const box = document.getElementById("suggestBox");
-
-  if (!keyword || keyword.trim() === "") {
-    box.innerHTML = "";
-    return;
-  }
-
-  try {
-    const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
-    const data = await res.json();
-
-    if (!Array.isArray(data) || data.length === 0) {
-      box.innerHTML = "";
-      return;
-    }
-
-    box.innerHTML = data
-      .map(item => {
-        const name = String(item).replace(/'/g, "\\'");
-        return `
-          <div class="suggest-item" onclick="selectSuggest('${name}')">
-            🔎 ${item}
-          </div>
-        `;
-      })
-      .join("");
+    resultDiv.innerHTML = html;
 
   } catch (err) {
-    console.log("SUGGEST ERROR:", err);
+    console.error(err);
+    alert("Search error server");
   }
-}
-
-function selectSuggest(name) {
-  document.getElementById("searchInput").value = name;
-  document.getElementById("suggestBox").innerHTML = "";
-  searchProduct();
 }
