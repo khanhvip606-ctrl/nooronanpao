@@ -9,7 +9,6 @@ function formatNumber(num) {
   return n.toLocaleString("en-US");
 }
 
-
 /* =========================
    SEARCH PRODUCT
 ========================= */
@@ -17,6 +16,7 @@ function formatNumber(num) {
 async function searchProduct() {
 
   const keyword = document.getElementById("searchInput").value.trim();
+  const resultDiv = document.getElementById("result");
 
   if (!keyword) {
     alert("Enter product name");
@@ -28,82 +28,94 @@ async function searchProduct() {
     const res = await fetch(`/search?name=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
-    const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "";
 
-    if (!data || data.length === 0) {
-      resultDiv.innerHTML = `
-        <div class="card-result">
-          <h2>No products found</h2>
-        </div>
-      `;
+    if (!Array.isArray(data) || data.length === 0) {
+      resultDiv.innerHTML = `<div class="card-result"><h3>No products found</h3></div>`;
       return;
     }
 
     data.forEach((item, index) => {
 
+      const detailId = "detail-" + index;
+
       const card = document.createElement("div");
       card.className = "card-result fade-in";
 
-      const detailId = "detail-" + index;
-
       card.innerHTML = `
-        <h2>${safe(item.product)}</h2>
+        <div class="card-header">
+          <h2>📦 ${safe(item.product)}</h2>
 
-        <div class="result-row">
-          <div class="result-label">Selling Price (VND)</div>
-          <div class="result-value">${formatNumber(item.sellPriceVND)}</div>
+          <button class="detail-btn" id="btn-${detailId}" type="button">
+            ⓘ
+          </button>
         </div>
 
-        <div class="result-row">
-          <div class="result-label">Profit Rate</div>
-          <div class="result-value">${safe(item.avgGrossRate)}</div>
+        <div class="card-body">
+
+          <div class="row">
+            <span class="label">💰 Selling Price</span>
+            <span class="value">${formatNumber(item.sellPriceVND)} VND</span>
+          </div>
+
+          <div class="row highlight">
+            <span class="label">📊 Profit Rate</span>
+            <span class="value">${safe(item.avgGrossRate)}</span>
+          </div>
+
         </div>
 
-        <div class="result-row">
-          <div class="result-label">Click for details</div>
-          <div class="result-value">▶</div>
-        </div>
+        <div id="${detailId}" class="detail-box" style="display:none;">
 
-        <div id="${detailId}" style="display:none; margin-top:20px;">
+          <hr/>
 
-          <div class="result-row">
-            <div class="result-label">USD Price</div>
-            <div class="result-value">$${formatNumber(item.sellPriceUSD)}</div>
+          <div class="row">
+            <span class="label">USD</span>
+            <span class="value">$${formatNumber(item.sellPriceUSD)}</span>
           </div>
 
-          <div class="result-row">
-            <div class="result-label">TWD Price</div>
-            <div class="result-value">${formatNumber(item.sellPriceTWD)}</div>
+          <div class="row">
+            <span class="label">TWD</span>
+            <span class="value">${formatNumber(item.sellPriceTWD)}</span>
           </div>
 
-          <div class="result-row">
-            <div class="result-label">Cost</div>
-            <div class="result-value">${formatNumber(item.costVND)}</div>
+          <div class="row">
+            <span class="label">Cost</span>
+            <span class="value">${formatNumber(item.costVND)}</span>
           </div>
 
-          <div class="result-row">
-            <div class="result-label">Profit</div>
-            <div class="result-value">${formatNumber(item.profitVND)}</div>
+          <div class="row">
+            <span class="label">Profit</span>
+            <span class="value">${formatNumber(item.profitVND)}</span>
           </div>
 
-          <div class="result-row">
-            <div class="result-label">Quantity</div>
-            <div class="result-value">${safe(item.quantity)} Kg</div>
+          <div class="row">
+            <span class="label">Quantity</span>
+            <span class="value">${safe(item.quantity)} Kg</span>
           </div>
 
         </div>
       `;
 
-      card.addEventListener("click", () => {
-        const detail = document.getElementById(detailId);
-        if (!detail) return;
-
-        detail.style.display =
-          detail.style.display === "block" ? "none" : "block";
-      });
-
       resultDiv.appendChild(card);
+
+      // ✅ ONLY ICON CLICK
+      setTimeout(() => {
+
+        const btn = document.getElementById(`btn-${detailId}`);
+        const detail = document.getElementById(detailId);
+
+        if (!btn || !detail) return;
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation(); // không lan click
+
+          const isOpen = detail.style.display === "block";
+          detail.style.display = isOpen ? "none" : "block";
+        });
+
+      }, 0);
+
     });
 
   } catch (err) {
@@ -114,7 +126,7 @@ async function searchProduct() {
 
 
 /* =========================
-   AUTOCOMPLETE / SUGGEST
+   AUTOCOMPLETE
 ========================= */
 
 async function getSuggest() {
@@ -132,7 +144,7 @@ async function getSuggest() {
     const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
-    if (!data || data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
       box.innerHTML = "";
       return;
     }
