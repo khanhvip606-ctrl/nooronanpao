@@ -6,12 +6,15 @@ async function uploadExcel() {
 
   const fileInput = document.getElementById("excelFile");
   const msg = document.getElementById("uploadStatus");
+
+  if (!fileInput || !msg) return;
+
   const file = fileInput.files[0];
 
   if (!file) {
     msg.style.display = "block";
     msg.className = "error";
-    msg.innerText = "❌ Chưa chọn file Excel";
+    msg.innerText = "❌ Please select file";
     return;
   }
 
@@ -21,8 +24,7 @@ async function uploadExcel() {
   try {
 
     msg.style.display = "block";
-    msg.className = "";
-    msg.innerText = "⏳ Đang upload file...";
+    msg.innerText = "Uploading...";
 
     const res = await fetch("/upload", {
       method: "POST",
@@ -32,34 +34,34 @@ async function uploadExcel() {
     const data = await res.json();
 
     msg.className = "success";
-    msg.innerText = "✅ Upload thành công " + data.total + " dòng dữ liệu";
+    msg.innerText = "Upload success: " + (data.total || 0) + " rows";
 
   } catch (err) {
     msg.className = "error";
-    msg.innerText = "❌ Upload thất bại";
+    msg.innerText = "Upload failed";
   }
 }
 
 
 /* =========================
-   LOGIN SYSTEM
+   LOGIN
 ========================= */
 
-function login(){
+function login() {
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
   const msg = document.getElementById("loginMsg");
 
-  if(
+  if (
     username === "nooronanpao" &&
     password === "nooronanpaonhontrach"
-  ){
+  ) {
 
     localStorage.setItem("loggedIn", "true");
 
     msg.style.color = "#22c55e";
-    msg.innerText = "✅ Login successful";
+    msg.innerText = "Login success";
 
     setTimeout(() => {
       window.location.href = "/";
@@ -68,7 +70,7 @@ function login(){
   } else {
 
     msg.style.color = "#ef4444";
-    msg.innerText = "❌ Wrong username or password";
+    msg.innerText = "Wrong username or password";
   }
 }
 
@@ -95,7 +97,7 @@ if (loggedIn !== "true") {
    LOGOUT
 ========================= */
 
-function logout(){
+function logout() {
   localStorage.removeItem("loggedIn");
   window.location.href = "/login.html";
 }
