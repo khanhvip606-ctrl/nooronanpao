@@ -10,11 +10,10 @@ function formatNumber(num) {
 }
 
 /* =========================
-   SEARCH PRODUCT (OLD STYLE WORKING)
+   SEARCH PRODUCT (STABLE FIX)
 ========================= */
 
 async function searchProduct() {
-
   const keyword = document.getElementById("searchInput").value.trim();
 
   if (!keyword) {
@@ -29,83 +28,92 @@ async function searchProduct() {
     const resultDiv = document.getElementById("result");
     resultDiv.innerHTML = "";
 
-    if (!data || data.length === 0) {
-      resultDiv.innerHTML = `<h3>No products found</h3>`;
+    console.log("SEARCH RESULT:", data);
+
+    if (!Array.isArray(data) || data.length === 0) {
+      resultDiv.innerHTML = `
+        <div class="card-result">
+          <h2>No products found</h2>
+        </div>
+      `;
       return;
     }
 
-    data.forEach((item) => {
+    data.forEach((item, index) => {
+
+      const detailId = `detail-${index}`;
 
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card-result fade-in";
 
       card.innerHTML = `
-        <h2>📦 ${item.product}</h2>
-        <p>💰 Selling Price: ${item.sellPriceVND}</p>
-        <p>📊 Profit Rate: ${item.avgGrossRate}</p>
-        <small>👉 Click to view details</small>
+        <h2>${safe(item.product)}</h2>
+
+        <div class="result-row">
+          <div class="result-label">Selling Price (VND)</div>
+          <div class="result-value">${formatNumber(item.sellPriceVND)}</div>
+        </div>
+
+        <div class="result-row">
+          <div class="result-label">Profit Rate</div>
+          <div class="result-value">${safe(item.avgGrossRate)}</div>
+        </div>
+
+        <div class="result-row">
+          <div class="result-label">Click for details</div>
+          <div class="result-value">▶</div>
+        </div>
+
+        <div id="${detailId}" style="display:none; margin-top:15px;">
+          <div class="result-row">
+            <div class="result-label">USD</div>
+            <div class="result-value">$${formatNumber(item.sellPriceUSD)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">TWD</div>
+            <div class="result-value">${formatNumber(item.sellPriceTWD)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Cost</div>
+            <div class="result-value">${formatNumber(item.costVND)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Profit</div>
+            <div class="result-value">${formatNumber(item.profitVND)}</div>
+          </div>
+
+          <div class="result-row">
+            <div class="result-label">Quantity</div>
+            <div class="result-value">${safe(item.quantity)} Kg</div>
+          </div>
+        </div>
       `;
 
-      card.onclick = () => {
-        document.getElementById("modalBody").innerHTML = `
-          <h2>📦 ${item.product}</h2>
-          <hr>
+      card.addEventListener("click", () => {
+        const detail = document.getElementById(detailId);
+        if (!detail) return;
 
-          <h3>💰 SELLING PRICE</h3>
-          <p>
-            VND: ${item.sellPriceVND} ₫ <br>
-            USD: $${item.sellPriceUSD} <br>
-            TWD: ¥${item.sellPriceTWD}
-          </p>
-
-          <h3>🧾 COST PRICE</h3>
-          <p>
-            VND: ${item.costVND} ₫ <br>
-            USD: $${item.costUSD} <br>
-            TWD: ¥${item.costTWD}
-          </p>
-
-          <h3>📈 PROFIT</h3>
-          <p>
-            VND: ${item.profitVND} ₫ <br>
-            USD: $${item.profitUSD} <br>
-            TWD: ¥${item.profitTWD}
-          </p>
-
-          <hr>
-
-          <p>⚖️ Quantity: ${item.quantity} Kg</p>
-          <p>📊 Profit Rate: ${item.avgGrossRate}</p>
-        `;
-
-        document.getElementById("modal").style.display = "block";
-      };
+        detail.style.display =
+          detail.style.display === "block" ? "none" : "block";
+      });
 
       resultDiv.appendChild(card);
     });
 
-    document.getElementById("closeModal").onclick = () => {
-      document.getElementById("modal").style.display = "none";
-    };
-
-    window.onclick = (e) => {
-      if (e.target.id === "modal") {
-        document.getElementById("modal").style.display = "none";
-      }
-    };
-
   } catch (err) {
-    console.error(err);
-    alert("Search error from server");
+    console.error("SEARCH ERROR:", err);
+    alert("Search error");
   }
 }
 
 /* =========================
-   AUTOCOMPLETE (OLD WORKING)
+   AUTOCOMPLETE (SAFE FIX)
 ========================= */
 
 async function getSuggest() {
-
   const keyword = document.getElementById("searchInput").value;
   const box = document.getElementById("suggestBox");
 
@@ -118,19 +126,24 @@ async function getSuggest() {
     const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
-    if (!data || data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
       box.innerHTML = "";
       return;
     }
 
-    box.innerHTML = data.map(item => `
-      <div class="suggest-item" onclick="selectSuggest('${item}')">
-        🔎 ${item}
-      </div>
-    `).join("");
+    box.innerHTML = data
+      .map(item => {
+        const name = String(item).replace(/'/g, "\\'");
+        return `
+          <div class="suggest-item" onclick="selectSuggest('${name}')">
+            🔎 ${item}
+          </div>
+        `;
+      })
+      .join("");
 
   } catch (err) {
-    console.log(err);
+    console.log("SUGGEST ERROR:", err);
   }
 }
 
