@@ -1359,7 +1359,7 @@ body{
 }
 
 /* =========================
-   SUGGEST BOX DROPDOWN
+   SUGGEST BOX (HORIZONTAL - UPGRADED UI)
 ========================= */
 
 #suggestBox {
@@ -1368,54 +1368,68 @@ body{
   left: 0;
   right: 0;
 
-  background-color: #ffffff;
-  color: #000000;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  padding: 10px;
 
-  margin-top: 5px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  margin-top: 8px;
 
   z-index: 9999;
 
-  max-height: 250px;
-  overflow-y: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
 
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
 }
 
-/* =========================
-   SUGGEST ITEM
-========================= */
-
+/* ITEM */
 .suggest-item {
-  padding: 12px;
-  cursor: pointer;
+  flex: 0 0 auto;
+
+  padding: 10px 16px;
+  border-radius: 999px;
+
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+
+  color: #e2e8f0;
 
   font-size: 14px;
+  font-weight: 600;
 
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  white-space: nowrap;
 }
 
-/* hover effect */
+/* hover đẹp kiểu glow */
 .suggest-item:hover {
-  background-color: #f3f4f6;
+  background: rgba(56, 189, 248, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
 }
 
-/* =========================
-   SCROLL BAR (OPTIONAL)
-========================= */
-
+/* scrollbar ngang */
 #suggestBox::-webkit-scrollbar {
-  width: 6px;
+  height: 6px;
 }
 
 #suggestBox::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
+  background: #38bdf8;
   border-radius: 10px;
 }
 
 #suggestBox::-webkit-scrollbar-track {
-  background-color: transparent;
+  background: transparent;
 }
