@@ -4,15 +4,70 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
 
 <title>Price Checker</title>
 
-<link rel="stylesheet" href="style.css"/>
+<link
+rel="stylesheet"
+href="style.css"
+/>
 
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com"
+/>
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin
+/>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet"
+/>
+
+<style>
+
+/* ===== AUTOCOMPLETE FIX ===== */
+
+#suggestBox {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  z-index: 9999;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.suggest-item {
+  padding: 10px;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  transition: 0.2s;
+}
+
+.suggest-item:hover {
+  background: #f3f3f3;
+}
+
+/* ⭐ THÊM FIX QUAN TRỌNG (KHÔNG PHÁ CODE) */
+.search-box {
+  position: relative;
+}
+
+</style>
 
 </head>
 
@@ -22,69 +77,69 @@
 
 <header class="navbar">
 
-  <div class="logo">NOOROO NANPAO</div>
+<div class="logo">
+NOOROO NANPAO
+</div>
 
-  <nav>
-    <a href="/index.html">Home</a>
-    <a href="/upload.html">Upload</a>
-    <a href="/search.html" class="active">Search</a>
-  </nav>
+<nav>
+
+<a href="/index.html">
+Home
+</a>
+
+<a href="/upload.html">
+Upload
+</a>
+
+<a href="/search.html" class="active">
+Search
+</a>
+
+</nav>
 
 </header>
 
 <main class="search-container fade-in">
 
-  <div class="search-header">
+<div class="search-header">
 
-    <h1>PRICE CHECKER</h1>
+<h1>
+PRICE CHECKER
+</h1>
 
-    <p>
-      Search products, profit, cost and currency conversion in real time.
-    </p>
-
-  </div>
-
-  <!-- SEARCH BOX -->
-  <div class="search-box">
-
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Enter product name..."
-      oninput="getSuggest()"
-    />
-
-    <button onclick="searchProduct()">
-      SEARCH
-    </button>
-
-    <!-- AUTOCOMPLETE -->
-    <div id="suggestBox"></div>
-
-  </div>
-
-  <!-- RESULT -->
-  <div id="result"></div>
-
-</main>
-
-<!-- =========================
-   MODAL (FIX QUAN TRỌNG BẠN THIẾU)
-========================= -->
-
-<div id="modal" class="modal">
-
-  <div class="modal-content">
-
-    <span id="closeModal" class="close">&times;</span>
-
-    <div id="modalBody"></div>
-
-  </div>
+<p>
+Search products, profit, cost and currency conversion in real time.
+</p>
 
 </div>
 
-<!-- JS -->
+<!-- =========================
+     SEARCH BOX
+========================= -->
+
+<div class="search-box" style="position:relative;">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Enter product name..."
+oninput="getSuggest()"
+/>
+
+<button onclick="searchProduct()">
+SEARCH
+</button>
+
+<!-- AUTOCOMPLETE BOX -->
+<div id="suggestBox"></div>
+
+</div>
+
+<!-- RESULT -->
+<div id="result"></div>
+
+</main>
+
 <script src="script.js"></script>
 
 </body>
