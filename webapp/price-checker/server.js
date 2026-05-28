@@ -324,6 +324,33 @@ app.get("/search", (req, res) => {
 });
 
 /* =========================
+   SUGGEST SEARCH (NEW FEATURE)
+========================= */
+
+app.get("/suggest", (req, res) => {
+
+  const keyword =
+  (req.query.q || "").toLowerCase();
+
+  if (!keyword) {
+
+    return res.json([]);
+
+  }
+
+  const suggestions =
+  products
+    .map(p => p["Name of goods"] || "")
+    .filter(name =>
+      name.toLowerCase().includes(keyword)
+    )
+    .slice(0, 10);
+
+  res.json(suggestions);
+
+});
+
+/* =========================
    SERVER
 ========================= */
 
