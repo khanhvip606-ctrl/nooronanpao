@@ -31,7 +31,11 @@ async function searchProduct() {
     resultDiv.innerHTML = "";
 
     if (!Array.isArray(data) || data.length === 0) {
-      resultDiv.innerHTML = `<div class="card-result"><h3>No products found</h3></div>`;
+      resultDiv.innerHTML = `
+        <div class="card-result">
+          <h3>No products found</h3>
+        </div>
+      `;
       return;
     }
 
@@ -45,10 +49,6 @@ async function searchProduct() {
       card.innerHTML = `
         <div class="card-header">
           <h2>📦 ${safe(item.product)}</h2>
-
-          <button class="detail-btn" id="btn-${detailId}" type="button">
-            ⓘ
-          </button>
         </div>
 
         <div class="card-body">
@@ -61,6 +61,13 @@ async function searchProduct() {
           <div class="row highlight">
             <span class="label">📊 Profit Rate</span>
             <span class="value">${safe(item.avgGrossRate)}</span>
+          </div>
+
+          <!-- ICON xuống dòng 3 -->
+          <div class="icon-row">
+            <button class="detail-btn" id="btn-${detailId}" type="button">
+              ⓘ Click
+            </button>
           </div>
 
         </div>
@@ -99,22 +106,18 @@ async function searchProduct() {
 
       resultDiv.appendChild(card);
 
-      // ✅ ONLY ICON CLICK
-      setTimeout(() => {
+      /* =========================
+         ICON CLICK
+      ========================= */
+      const btn = card.querySelector(`#btn-${detailId}`);
+      const detail = card.querySelector(`#${detailId}`);
 
-        const btn = document.getElementById(`btn-${detailId}`);
-        const detail = document.getElementById(detailId);
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
 
-        if (!btn || !detail) return;
-
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation(); // không lan click
-
-          const isOpen = detail.style.display === "block";
-          detail.style.display = isOpen ? "none" : "block";
-        });
-
-      }, 0);
+        const isOpen = detail.style.display === "block";
+        detail.style.display = isOpen ? "none" : "block";
+      });
 
     });
 
@@ -131,10 +134,10 @@ async function searchProduct() {
 
 async function getSuggest() {
 
-  const keyword = document.getElementById("searchInput").value;
+  const keyword = document.getElementById("searchInput").value.trim();
   const box = document.getElementById("suggestBox");
 
-  if (!keyword || keyword.trim() === "") {
+  if (!keyword) {
     box.innerHTML = "";
     return;
   }
