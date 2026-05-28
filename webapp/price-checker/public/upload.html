@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="upload-page">
+
+  <div class="upload-wrapper fade-in">
+
+    <div class="upload-card">
+
+      <div class="upload-header">
+        <h1>📤 DATA IMPORT</h1>
+        <p>Upload Excel file to system</p>
+      </div>
+
+      <div class="upload-body">
+
+        <input type="file" id="excelFile" />
+
+        <button onclick="uploadExcel()">
+          UPLOAD FILE
+        </button>
+
+        <!-- Upload Status -->
+        <div id="uploadStatus"></div>
+
+      </div>
+
+      <div class="upload-footer">
+        <a href="/search.html">🔍 Go Search</a>
+        <a href="/">🏠 Home</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

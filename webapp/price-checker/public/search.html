@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
+
+<title>Price Checker</title>
+
+<link
+rel="stylesheet"
+href="style.css"
+/>
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com"
+/>
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin
+/>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet"
+/>
+
+</head>
+
+<body class="search-page">
+
+<div class="search-overlay"></div>
+
+<header class="navbar">
+
+<div class="logo">
+NOOROO NANPAO
+</div>
+
+<nav>
+
+<a href="/index.html">
+Home
+</a>
+
+<a href="/upload.html">
+Upload
+</a>
+
+<a href="/search.html" class="active">
+Search
+</a>
+
+</nav>
+
+</header>
+
+<main class="search-container fade-in">
+
+<div class="search-header">
+
+<h1>
+PRICE CHECKER
+</h1>
+
+<p>
+Tra cứu giá sản phẩm, lợi nhuận,
+giá vốn và quy đổi ngoại tệ.
+</p>
+
+</div>
+
+<div class="search-box">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Nhập tên sản phẩm..."
+>
+
+<button onclick="searchProduct()">
+SEARCH
+</button>
+
+</div>
+
+<div id="result"></div>
+
+</main>
+
+<script src="script.js"></script>
+
+</body>
+</html>
