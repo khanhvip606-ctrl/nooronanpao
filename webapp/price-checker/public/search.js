@@ -82,3 +82,57 @@ async function searchProduct() {
     alert("Search lỗi server");
   }
 }
+
+
+/* =====================================================
+   ⭐ AUTOCOMPLETE / SUGGEST FEATURE (THÊM MỚI)
+===================================================== */
+
+async function getSuggest() {
+
+  const keyword =
+  document.getElementById("searchInput").value;
+
+  const box =
+  document.getElementById("suggestBox");
+
+  if (!keyword || keyword.trim() === "") {
+    box.innerHTML = "";
+    return;
+  }
+
+  try {
+
+    const res =
+    await fetch(`http://localhost:3000/suggest?q=${keyword}`);
+
+    const data =
+    await res.json();
+
+    if (!data || data.length === 0) {
+      box.innerHTML = "";
+      return;
+    }
+
+    box.innerHTML =
+    data.map(item => `
+      <div class="suggest-item" onclick="selectSuggest('${item}')">
+        🔎 ${item}
+      </div>
+    `).join("");
+
+  } catch (err) {
+    console.log(err);
+  }
+
+}
+
+function selectSuggest(name) {
+
+  document.getElementById("searchInput").value = name;
+
+  document.getElementById("suggestBox").innerHTML = "";
+
+  searchProduct(); // auto search luôn
+
+}
