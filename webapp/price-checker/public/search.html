@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
 
@@ -72,26 +72,34 @@ PRICE CHECKER
 </h1>
 
 <p>
-Tra cứu giá sản phẩm, lợi nhuận,
-giá vốn và quy đổi ngoại tệ.
+Search products, profit, cost and currency conversion in real time.
 </p>
 
 </div>
 
-<div class="search-box">
+<!-- =========================
+     SEARCH BOX + AUTOCOMPLETE
+========================= -->
+
+<div class="search-box" style="position:relative;">
 
 <input
 type="text"
 id="searchInput"
-placeholder="Nhập tên sản phẩm..."
->
+placeholder="Enter product name..."
+oninput="getSuggest()"
+/>
 
 <button onclick="searchProduct()">
 SEARCH
 </button>
 
+<!-- AUTOCOMPLETE BOX -->
+<div id="suggestBox"></div>
+
 </div>
 
+<!-- RESULT -->
 <div id="result"></div>
 
 </main>
@@ -99,4 +107,5 @@ SEARCH
 <script src="script.js"></script>
 
 </body>
+
 </html>
