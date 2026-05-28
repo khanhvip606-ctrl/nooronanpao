@@ -10,7 +10,7 @@ function formatNumber(num) {
 }
 
 /* =========================
-   SEARCH PRODUCT (FIXED)
+   SEARCH PRODUCT (FIXED STABLE)
 ========================= */
 
 async function searchProduct() {
@@ -41,6 +41,8 @@ async function searchProduct() {
       const card = document.createElement("div");
       card.className = "card-result fade-in";
 
+      const detailId = "detail-" + index;
+
       card.innerHTML = `
         <h2>${safe(item.product)}</h2>
 
@@ -59,7 +61,8 @@ async function searchProduct() {
           <div class="result-value">▶</div>
         </div>
 
-        <div id="detail-${index}" style="display:none; margin-top:20px;">
+        <div id="${detailId}" class="detail-box" style="display:none; margin-top:20px;">
+          
           <div class="result-row">
             <div class="result-label">USD Price</div>
             <div class="result-value">$${formatNumber(item.sellPriceUSD)}</div>
@@ -84,17 +87,18 @@ async function searchProduct() {
             <div class="result-label">Quantity</div>
             <div class="result-value">${safe(item.quantity)} Kg</div>
           </div>
+
         </div>
       `;
 
-      card.onclick = () => {
-        const detail = document.getElementById(`detail-${index}`);
-        if (detail.style.display === "none") {
-          detail.style.display = "block";
-        } else {
-          detail.style.display = "none";
-        }
-      };
+      card.addEventListener("click", () => {
+        const detail = card.querySelector("#" + detailId);
+
+        if (!detail) return;
+
+        detail.style.display =
+          detail.style.display === "block" ? "none" : "block";
+      });
 
       resultDiv.appendChild(card);
     });
@@ -106,7 +110,7 @@ async function searchProduct() {
 }
 
 /* =========================
-   AUTOCOMPLETE (FIXED)
+   AUTOCOMPLETE (FIXED SAFE)
 ========================= */
 
 async function getSuggest() {
@@ -127,11 +131,14 @@ async function getSuggest() {
       return;
     }
 
-    box.innerHTML = data.map(item => `
-      <div class="suggest-item" onclick="selectSuggest('${item}')">
-        🔎 ${item}
-      </div>
-    `).join("");
+    box.innerHTML = data.map(item => {
+      const safeItem = String(item).replace(/'/g, "\\'");
+      return `
+        <div class="suggest-item" onclick="selectSuggest('${safeItem}')">
+          🔎 ${item}
+        </div>
+      `;
+    }).join("");
 
   } catch (err) {
     console.log("suggest error", err);
