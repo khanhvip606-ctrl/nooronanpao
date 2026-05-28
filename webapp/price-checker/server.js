@@ -1,367 +1,186 @@
-const express = require("express");
-const cors = require("cors");
-const multer = require("multer");
-const XLSX = require("xlsx");
-const path = require("path");
+function safe(v) {
 
-const app = express();
+  if (
+    v === undefined ||
+    v === null ||
+    v === ""
+  ) {
+    return "0";
+  }
 
-/* =========================
-   MIDDLEWARE
-========================= */
-
-app.use(cors());
-
-app.use(express.json());
-
-app.use(express.static("public"));
+  return v;
+}
 
 /* =========================
-   ROOT LOGIN PAGE
+   FORMAT NUMBER
 ========================= */
 
-app.get("/", (req, res) => {
+function formatNumber(num){
 
-  res.sendFile(
-    path.join(
-      __dirname,
-      "public",
-      "login.html"
-    )
+  const n = Number(num);
+
+  if(isNaN(n)) return "0";
+
+  return n.toLocaleString(
+    "en-US"
   );
 
-});
-
-/* =========================
-   MULTER STORAGE (FIX RENDER)
-========================= */
-
-/* ❗ FIX 1: chuyển sang memoryStorage */
-const storage = multer.memoryStorage();
-
-const upload = multer({
-  storage
-});
-
-/* =========================
-   PRODUCT DATA
-========================= */
-
-let products = [];
-
-/* =========================
-   UPLOAD EXCEL (FIX RENDER)
-========================= */
-
-app.post(
-  "/upload",
-  upload.single("excel"),
-  (req, res) => {
-
-    try {
-
-      /* ❗ FIX 2: đọc buffer thay vì file.path */
-      const workbook =
-      XLSX.read(
-        req.file.buffer,
-        { type: "buffer" }
-      );
-
-      const sheetName =
-      workbook.SheetNames[0];
-
-      const firstSheet =
-      workbook.Sheets[sheetName];
-
-      const data =
-      XLSX.utils.sheet_to_json(
-        firstSheet
-      );
-
-      products = data;
-
-      console.log(
-        "TOTAL PRODUCTS:",
-        products.length
-      );
-
-      res.json({
-
-        message:
-        "Upload thành công",
-
-        total:
-        products.length,
-
-      });
-
-    }
-
-    catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-
-        error:
-        "Lỗi đọc file Excel",
-
-      });
-
-    }
-
-});
-
-/* =========================
-   SAFE NUMBER
-========================= */
-
-const safeNumber = (v) => {
-
-  const n = Number(
-
-    String(v ?? "")
-
-    .replace(/,/g, "")
-
-    .replace(/\s/g, "")
-
-    .trim()
-
-  );
-
-  return isNaN(n)
-  ? 0
-  : n;
-
-};
+}
 
 /* =========================
    SEARCH PRODUCT
 ========================= */
 
-app.get("/search", (req, res) => {
+async function searchProduct() {
 
   const keyword =
-  req.query.name || "";
+  document.getElementById(
+    "searchInput"
+  ).value.trim();
 
   if (!keyword) {
 
-    return res.json([]);
+    alert("Nhập tên sản phẩm");
 
+    return;
   }
 
-  const result =
-  products.filter((p) => {
+  console.log(
+    "SEARCH CLICK:",
+    keyword
+  );
 
-    const name = String(
+  try {
 
-      p["Name of goods"] || ""
-
-    ).toLowerCase();
-
-    return name.includes(
-      keyword.toLowerCase()
+    const res =
+    await fetch(
+      `/search?name=${encodeURIComponent(keyword)}`
     );
 
-  });
+    const data =
+    await res.json();
 
-  const USD_RATE = 26000;
-
-  const TWD_RATE = 840;
-
-  const finalResult =
-  result.map((p) => {
-
-    const sellPrice =
-    safeNumber(
-      p["Unit price"]
+    console.log(
+      "SEARCH RESULT:",
+      data
     );
 
-    const costRaw =
-    safeNumber(
-      p["Cost of goods sold"]
+    const resultDiv =
+    document.getElementById(
+      "result"
     );
 
-    const gross =
-    safeNumber(
-      p["Gross profit"]
-    );
+    resultDiv.innerHTML = "";
 
-    const rate =
-    safeNumber(
-      p["Gross profit rate"]
-    );
+    if (!data || data.length === 0) {
 
-    /* =========================
-       FIX QUANTITY
-    ========================= */
+      resultDiv.innerHTML = `
+      <div class="card-result">
+        <h2>Không tìm thấy sản phẩm</h2>
+      </div>
+      `;
 
-    let quantity = 0;
-
-    const keys =
-    Object.keys(p || {});
-
-    const qtyKey =
-    keys.find(k =>
-
-      k.toLowerCase().includes("kg")
-
-      ||
-
-      k.toLowerCase().includes("quantity")
-
-    );
-
-    if (qtyKey) {
-
-      quantity =
-      safeNumber(
-        p[qtyKey]
-      );
-
+      return;
     }
 
-    const sellPriceUSD =
-    sellPrice / USD_RATE;
+    data.forEach(item => {
 
-    const sellPriceTWD =
-    sellPrice / TWD_RATE;
+      resultDiv.innerHTML += `
+      <div class="card-result fade-in">
 
-    const costUSD =
-    costRaw / USD_RATE;
+        <h2>${safe(item.product)}</h2>
 
-    const costTWD =
-    costRaw / TWD_RATE;
+        <div class="result-row">
+          <div class="result-label">Giá bán (VND)</div>
+          <div class="result-value">${formatNumber(item.sellPriceVND)}</div>
+        </div>
 
-    const profitUSD =
-    gross / USD_RATE;
+        <div class="result-row">
+          <div class="result-label">Giá bán (USD)</div>
+          <div class="result-value">$ ${formatNumber(item.sellPriceUSD)}</div>
+        </div>
 
-    const profitTWD =
-    gross / TWD_RATE;
+        <div class="result-row">
+          <div class="result-label">Taiwan Dollar</div>
+          <div class="result-value">${formatNumber(item.sellPriceTWD)}</div>
+        </div>
 
-    const avgCost =
+        <div class="result-row">
+          <div class="result-label">Giá vốn / Unit</div>
+          <div class="result-value">${formatNumber(item.avgCost)}</div>
+        </div>
 
-      quantity > 0
+        <div class="result-row">
+          <div class="result-label">Lợi nhuận gộp</div>
+          <div class="result-value">${formatNumber(item.avgGrossProfit)}</div>
+        </div>
 
-      ?
+        <div class="result-row">
+          <div class="result-label">Tỷ lệ lợi nhuận</div>
+          <div class="result-value">${safe(item.avgGrossRate)}</div>
+        </div>
 
-      costRaw / quantity
+      </div>
+      `;
+    });
 
-      :
+  } catch (err) {
 
-      costRaw;
+    console.error("SEARCH ERROR:", err);
 
-    return {
-
-      product:
-      p["Name of goods"] || "",
-
-      sellPriceVND:
-      safeNumber(sellPrice),
-
-      sellPriceUSD:
-      Number(
-        sellPriceUSD.toFixed(2)
-      ),
-
-      sellPriceTWD:
-      Number(
-        sellPriceTWD.toFixed(2)
-      ),
-
-      costVND:
-      safeNumber(costRaw),
-
-      costUSD:
-      Number(
-        costUSD.toFixed(2)
-      ),
-
-      costTWD:
-      Number(
-        costTWD.toFixed(2)
-      ),
-
-      profitVND:
-      safeNumber(gross),
-
-      profitUSD:
-      Number(
-        profitUSD.toFixed(2)
-      ),
-
-      profitTWD:
-      Number(
-        profitTWD.toFixed(2)
-      ),
-
-      quantity:
-      safeNumber(quantity),
-
-      avgCost:
-      Number(
-        avgCost.toFixed(2)
-      ),
-
-      avgGrossProfit:
-      safeNumber(gross),
-
-      avgGrossRate:
-      rate + "%"
-
-    };
-
-  });
-
-  console.log(
-    "TOTAL RESULT:",
-    finalResult.length
-  );
-
-  res.json(finalResult);
-
-});
+    alert("Search lỗi server");
+  }
+}
 
 /* =========================
-   SUGGEST SEARCH (NEW FEATURE)
+   AUTOCOMPLETE (SUGGEST)
 ========================= */
 
-app.get("/suggest", (req, res) => {
+async function getSuggest() {
 
   const keyword =
-  (req.query.q || "").toLowerCase();
+  document.getElementById("searchInput").value.trim();
+
+  const box =
+  document.getElementById("suggestBox");
 
   if (!keyword) {
-
-    return res.json([]);
-
+    box.innerHTML = "";
+    return;
   }
 
-  const suggestions =
-  products
-    .map(p => p["Name of goods"] || "")
-    .filter(name =>
-      name.toLowerCase().includes(keyword)
-    )
-    .slice(0, 10);
+  try {
 
-  res.json(suggestions);
+    const res =
+    await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
 
-});
+    const data =
+    await res.json();
 
-/* =========================
-   SERVER
-========================= */
+    if (!data || data.length === 0) {
+      box.innerHTML = "";
+      return;
+    }
 
-const PORT =
-process.env.PORT || 3000;
+    box.innerHTML =
+    data.map(item => `
+      <div class="suggest-item" onclick="selectSuggest('${item}')">
+        🔎 ${item}
+      </div>
+    `).join("");
 
-app.listen(PORT, () => {
+  } catch (err) {
+    console.log("SUGGEST ERROR:", err);
+  }
 
-  console.log(
-    "Server running on port",
-    PORT
-  );
+}
 
-});
+function selectSuggest(name) {
+
+  document.getElementById("searchInput").value = name;
+
+  document.getElementById("suggestBox").innerHTML = "";
+
+  searchProduct();
+
+}
