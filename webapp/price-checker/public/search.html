@@ -10,7 +10,7 @@ function formatNumber(num) {
 }
 
 /* =========================
-   SEARCH PRODUCT (FIXED STABLE)
+   SEARCH PRODUCT
 ========================= */
 
 async function searchProduct() {
@@ -38,6 +38,7 @@ async function searchProduct() {
     }
 
     data.forEach((item, index) => {
+
       const card = document.createElement("div");
       card.className = "card-result fade-in";
 
@@ -61,8 +62,8 @@ async function searchProduct() {
           <div class="result-value">▶</div>
         </div>
 
-        <div id="${detailId}" class="detail-box" style="display:none; margin-top:20px;">
-          
+        <div id="${detailId}" style="display:none; margin-top:20px;">
+
           <div class="result-row">
             <div class="result-label">USD Price</div>
             <div class="result-value">$${formatNumber(item.sellPriceUSD)}</div>
@@ -92,8 +93,7 @@ async function searchProduct() {
       `;
 
       card.addEventListener("click", () => {
-        const detail = card.querySelector("#" + detailId);
-
+        const detail = document.getElementById(detailId);
         if (!detail) return;
 
         detail.style.display =
@@ -110,7 +110,7 @@ async function searchProduct() {
 }
 
 /* =========================
-   AUTOCOMPLETE (FIXED SAFE)
+   AUTOCOMPLETE
 ========================= */
 
 async function getSuggest() {
@@ -131,14 +131,11 @@ async function getSuggest() {
       return;
     }
 
-    box.innerHTML = data.map(item => {
-      const safeItem = String(item).replace(/'/g, "\\'");
-      return `
-        <div class="suggest-item" onclick="selectSuggest('${safeItem}')">
-          🔎 ${item}
-        </div>
-      `;
-    }).join("");
+    box.innerHTML = data.map(item => `
+      <div class="suggest-item" onclick="selectSuggest('${item}')">
+        🔎 ${item}
+      </div>
+    `).join("");
 
   } catch (err) {
     console.log("suggest error", err);
