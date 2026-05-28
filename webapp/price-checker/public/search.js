@@ -10,7 +10,7 @@ function formatNumber(num) {
 }
 
 /* =========================
-   SEARCH PRODUCT
+   SEARCH PRODUCT (OLD STYLE WORKING)
 ========================= */
 
 async function searchProduct() {
@@ -23,7 +23,6 @@ async function searchProduct() {
   }
 
   try {
-
     const res = await fetch(`/search?name=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
@@ -31,11 +30,11 @@ async function searchProduct() {
     resultDiv.innerHTML = "";
 
     if (!data || data.length === 0) {
-      resultDiv.innerHTML = "<h3>No products found</h3>";
+      resultDiv.innerHTML = `<h3>No products found</h3>`;
       return;
     }
 
-    data.forEach(item => {
+    data.forEach((item) => {
 
       const card = document.createElement("div");
       card.className = "card";
@@ -48,7 +47,6 @@ async function searchProduct() {
       `;
 
       card.onclick = () => {
-
         document.getElementById("modalBody").innerHTML = `
           <h2>📦 ${item.product}</h2>
           <hr>
@@ -102,9 +100,8 @@ async function searchProduct() {
   }
 }
 
-
 /* =========================
-   AUTOCOMPLETE / SUGGEST
+   AUTOCOMPLETE (OLD WORKING)
 ========================= */
 
 async function getSuggest() {
@@ -118,7 +115,6 @@ async function getSuggest() {
   }
 
   try {
-
     const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
@@ -134,14 +130,9 @@ async function getSuggest() {
     `).join("");
 
   } catch (err) {
-    console.log("SUGGEST ERROR:", err);
+    console.log(err);
   }
 }
-
-
-/* =========================
-   SELECT SUGGEST
-========================= */
 
 function selectSuggest(name) {
   document.getElementById("searchInput").value = name;
