@@ -11,7 +11,7 @@ async function uploadExcel() {
   if (!file) {
     msg.style.display = "block";
     msg.className = "error";
-    msg.innerText = "❌ Please select file";
+    msg.innerText = "❌ Chưa chọn file Excel";
     return;
   }
 
@@ -21,7 +21,8 @@ async function uploadExcel() {
   try {
 
     msg.style.display = "block";
-    msg.innerText = "Uploading...";
+    msg.className = "";
+    msg.innerText = "⏳ Đang upload file...";
 
     const res = await fetch("/upload", {
       method: "POST",
@@ -31,34 +32,34 @@ async function uploadExcel() {
     const data = await res.json();
 
     msg.className = "success";
-    msg.innerText = "Upload success: " + data.total + " rows";
+    msg.innerText = "✅ Upload thành công " + data.total + " dòng dữ liệu";
 
   } catch (err) {
     msg.className = "error";
-    msg.innerText = "Upload failed";
+    msg.innerText = "❌ Upload thất bại";
   }
 }
 
 
 /* =========================
-   LOGIN
+   LOGIN SYSTEM
 ========================= */
 
-function login() {
+function login(){
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
   const msg = document.getElementById("loginMsg");
 
-  if (
+  if(
     username === "nooronanpao" &&
     password === "nooronanpaonhontrach"
-  ) {
+  ){
 
     localStorage.setItem("loggedIn", "true");
 
     msg.style.color = "#22c55e";
-    msg.innerText = "Login success";
+    msg.innerText = "✅ Login successful";
 
     setTimeout(() => {
       window.location.href = "/";
@@ -67,7 +68,7 @@ function login() {
   } else {
 
     msg.style.color = "#ef4444";
-    msg.innerText = "Wrong username or password";
+    msg.innerText = "❌ Wrong username or password";
   }
 }
 
@@ -94,7 +95,7 @@ if (loggedIn !== "true") {
    LOGOUT
 ========================= */
 
-function logout() {
+function logout(){
   localStorage.removeItem("loggedIn");
   window.location.href = "/login.html";
 }
