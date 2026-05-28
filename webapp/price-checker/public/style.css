@@ -1372,13 +1372,13 @@ body{
   flex-direction: row;
   gap: 10px;
 
-  padding: 10px;
+  padding: 12px;
 
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(12px);
+  background: rgba(2, 6, 23, 0.95); /* giống nền web */
+  backdrop-filter: blur(14px);
 
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 14px;
 
   margin-top: 8px;
 
@@ -1388,36 +1388,42 @@ body{
   overflow-y: hidden;
   white-space: nowrap;
 
-  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
-/* ITEM */
+/* =========================
+   SUGGEST ITEM (CHIP STYLE)
+========================= */
+
 .suggest-item {
   flex: 0 0 auto;
 
   padding: 10px 16px;
   border-radius: 999px;
 
-  background: rgba(56, 189, 248, 0.12);
+  background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.25);
 
-  color: #e2e8f0;
+  color: #cbd5e1;
 
   font-size: 14px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition: all 0.25s ease;
 
   white-space: nowrap;
 }
 
-/* hover đẹp kiểu glow */
+/* hover */
 .suggest-item:hover {
   background: rgba(56, 189, 248, 0.25);
+  color: #ffffff;
+
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+
+  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.25);
 }
 
 /* scrollbar ngang */
