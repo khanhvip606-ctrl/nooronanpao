@@ -6,9 +6,6 @@ async function uploadExcel() {
 
   const fileInput = document.getElementById("excelFile");
   const msg = document.getElementById("uploadStatus");
-
-  if (!fileInput || !msg) return;
-
   const file = fileInput.files[0];
 
   if (!file) {
@@ -34,7 +31,7 @@ async function uploadExcel() {
     const data = await res.json();
 
     msg.className = "success";
-    msg.innerText = "Upload success: " + (data.total || 0) + " rows";
+    msg.innerText = "Upload success: " + data.total + " rows";
 
   } catch (err) {
     msg.className = "error";
