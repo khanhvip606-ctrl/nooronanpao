@@ -1,186 +1,325 @@
-function safe(v) {
 
-  if (
-    v === undefined ||
-    v === null ||
-    v === ""
-  ) {
-    return "0";
-  }
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const XLSX = require("xlsx");
+const path = require("path");
 
-  return v;
-}
+const app = express();
 
 /* =========================
-   FORMAT NUMBER
+   MIDDLEWARE
 ========================= */
 
-function formatNumber(num){
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
 
-  const n = Number(num);
+/* =========================
+   ROOT LOGIN PAGE
+========================= */
 
-  if(isNaN(n)) return "0";
+app.get("/", (req, res) => {
 
-  return n.toLocaleString(
-    "en-US"
+  res.sendFile(
+    path.join(
+      __dirname,
+      "public",
+      "login.html"
+    )
   );
 
-}
+});
+
+/* =========================
+   MULTER STORAGE (FIX RENDER)
+========================= */
+
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage
+});
+
+/* =========================
+   PRODUCT DATA
+========================= */
+
+let products = [];
+
+/* =========================
+   UPLOAD EXCEL (FIX RENDER)
+========================= */
+
+app.post(
+  "/upload",
+  upload.single("excel"),
+  (req, res) => {
+
+    try {
+
+      const workbook =
+      XLSX.read(
+        req.file.buffer,
+        { type: "buffer" }
+      );
+
+      const sheetName =
+      workbook.SheetNames[0];
+
+      const firstSheet =
+      workbook.Sheets[sheetName];
+
+      const data =
+      XLSX.utils.sheet_to_json(
+        firstSheet
+      );
+
+      products = data;
+
+      console.log(
+        "TOTAL PRODUCTS:",
+        products.length
+      );
+
+      res.json({
+
+        message:
+        "Upload thành công",
+
+        total:
+        products.length
+
+      });
+
+    }
+
+    catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+
+        error:
+        "Lỗi đọc file Excel"
+
+      });
+
+    }
+
+  }
+);
+
+/* =========================
+   SAFE NUMBER
+========================= */
+
+const safeNumber = (v) => {
+
+  const n = Number(
+
+    String(v ?? "")
+    .replace(/,/g, "")
+    .replace(/\s/g, "")
+    .trim()
+
+  );
+
+  return isNaN(n)
+    ? 0
+    : n;
+
+};
 
 /* =========================
    SEARCH PRODUCT
 ========================= */
 
-async function searchProduct() {
+app.get("/search", (req, res) => {
 
   const keyword =
-  document.getElementById(
-    "searchInput"
-  ).value.trim();
+    req.query.name || "";
 
   if (!keyword) {
-
-    alert("Nhập tên sản phẩm");
-
-    return;
+    return res.json([]);
   }
 
-  console.log(
-    "SEARCH CLICK:",
-    keyword
-  );
+  const result =
+    products.filter((p) => {
 
-  try {
+      const name =
+        String(p["Name of goods"] || "")
+        .toLowerCase();
 
-    const res =
-    await fetch(
-      `/search?name=${encodeURIComponent(keyword)}`
-    );
+      return name.includes(
+        keyword.toLowerCase()
+      );
 
-    const data =
-    await res.json();
-
-    console.log(
-      "SEARCH RESULT:",
-      data
-    );
-
-    const resultDiv =
-    document.getElementById(
-      "result"
-    );
-
-    resultDiv.innerHTML = "";
-
-    if (!data || data.length === 0) {
-
-      resultDiv.innerHTML = `
-      <div class="card-result">
-        <h2>Không tìm thấy sản phẩm</h2>
-      </div>
-      `;
-
-      return;
-    }
-
-    data.forEach(item => {
-
-      resultDiv.innerHTML += `
-      <div class="card-result fade-in">
-
-        <h2>${safe(item.product)}</h2>
-
-        <div class="result-row">
-          <div class="result-label">Giá bán (VND)</div>
-          <div class="result-value">${formatNumber(item.sellPriceVND)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Giá bán (USD)</div>
-          <div class="result-value">$ ${formatNumber(item.sellPriceUSD)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Taiwan Dollar</div>
-          <div class="result-value">${formatNumber(item.sellPriceTWD)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Giá vốn / Unit</div>
-          <div class="result-value">${formatNumber(item.avgCost)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Lợi nhuận gộp</div>
-          <div class="result-value">${formatNumber(item.avgGrossProfit)}</div>
-        </div>
-
-        <div class="result-row">
-          <div class="result-label">Tỷ lệ lợi nhuận</div>
-          <div class="result-value">${safe(item.avgGrossRate)}</div>
-        </div>
-
-      </div>
-      `;
     });
 
-  } catch (err) {
+  const USD_RATE = 26000;
+  const TWD_RATE = 840;
 
-    console.error("SEARCH ERROR:", err);
+  const finalResult =
+    result.map((p) => {
 
-    alert("Search lỗi server");
-  }
-}
+      const sellPrice =
+        safeNumber(p["Unit price"]);
+
+      const costRaw =
+        safeNumber(p["Cost of goods sold"]);
+
+      const gross =
+        safeNumber(p["Gross profit"]);
+
+      const rate =
+        safeNumber(p["Gross profit rate"]);
+
+      let quantity = 0;
+
+      const keys =
+        Object.keys(p || {});
+
+      const qtyKey =
+        keys.find(k =>
+          k.toLowerCase().includes("kg")
+          ||
+          k.toLowerCase().includes("quantity")
+        );
+
+      if (qtyKey) {
+        quantity =
+          safeNumber(p[qtyKey]);
+      }
+
+      const sellPriceUSD =
+        sellPrice / USD_RATE;
+
+      const sellPriceTWD =
+        sellPrice / TWD_RATE;
+
+      const costUSD =
+        costRaw / USD_RATE;
+
+      const costTWD =
+        costRaw / TWD_RATE;
+
+      const profitUSD =
+        gross / USD_RATE;
+
+      const profitTWD =
+        gross / TWD_RATE;
+
+      const avgCost =
+        quantity > 0
+          ? costRaw / quantity
+          : costRaw;
+
+      return {
+
+        product:
+          p["Name of goods"] || "",
+
+        sellPriceVND:
+          safeNumber(sellPrice),
+
+        sellPriceUSD:
+          Number(sellPriceUSD.toFixed(2)),
+
+        sellPriceTWD:
+          Number(sellPriceTWD.toFixed(2)),
+
+        costVND:
+          safeNumber(costRaw),
+
+        costUSD:
+          Number(costUSD.toFixed(2)),
+
+        costTWD:
+          Number(costTWD.toFixed(2)),
+
+        profitVND:
+          safeNumber(gross),
+
+        profitUSD:
+          Number(profitUSD.toFixed(2)),
+
+        profitTWD:
+          Number(profitTWD.toFixed(2)),
+
+        quantity:
+          safeNumber(quantity),
+
+        avgCost:
+          Number(avgCost.toFixed(2)),
+
+        avgGrossProfit:
+          safeNumber(gross),
+
+        avgGrossRate:
+          rate + "%"
+
+      };
+
+    });
+
+  console.log(
+    "TOTAL RESULT:",
+    finalResult.length
+  );
+
+  res.json(finalResult);
+
+});
 
 /* =========================
-   AUTOCOMPLETE (SUGGEST)
+   ⭐ SUGGEST AUTOCOMPLETE (NEW)
 ========================= */
 
-async function getSuggest() {
-
-  const keyword =
-  document.getElementById("searchInput").value.trim();
-
-  const box =
-  document.getElementById("suggestBox");
-
-  if (!keyword) {
-    box.innerHTML = "";
-    return;
-  }
+app.get("/suggest", (req, res) => {
 
   try {
 
-    const res =
-    await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
+    const keyword =
+      (req.query.q || "").toLowerCase();
 
-    const data =
-    await res.json();
-
-    if (!data || data.length === 0) {
-      box.innerHTML = "";
-      return;
+    if (!keyword) {
+      return res.json([]);
     }
 
-    box.innerHTML =
-    data.map(item => `
-      <div class="suggest-item" onclick="selectSuggest('${item}')">
-        🔎 ${item}
-      </div>
-    `).join("");
+    const result =
+      products
+        .map(p => p["Name of goods"])
+        .filter(name =>
+          name &&
+          name.toLowerCase().includes(keyword)
+        )
+        .slice(0, 10);
+
+    res.json(result);
 
   } catch (err) {
+
     console.log("SUGGEST ERROR:", err);
+
+    res.json([]);
+
   }
 
-}
+});
 
-function selectSuggest(name) {
+/* =========================
+   SERVER
+========================= */
 
-  document.getElementById("searchInput").value = name;
+const PORT =
+  process.env.PORT || 3000;
 
-  document.getElementById("suggestBox").innerHTML = "";
+app.listen(PORT, () => {
 
-  searchProduct();
+  console.log(
+    "Server running on port",
+    PORT
+  );
 
-}
+});
