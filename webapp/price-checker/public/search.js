@@ -2,7 +2,10 @@ async function searchProduct() {
   const keyword = document.getElementById("searchInput").value;
 
   try {
-    const res = await fetch(`http://localhost:3000/search?name=${keyword}`);
+
+    // ❗ FIX RENDER: bỏ localhost
+    const res = await fetch(`/search?name=${encodeURIComponent(keyword)}`);
+
     const data = await res.json();
 
     const resultDiv = document.getElementById("result");
@@ -25,9 +28,6 @@ async function searchProduct() {
         <small>👉 Click để xem chi tiết</small>
       `;
 
-      // =========================
-      // CLICK OPEN MODAL FULL
-      // =========================
       card.onclick = () => {
         document.getElementById("modalBody").innerHTML = `
           <h2>📦 ${item.product}</h2>
@@ -66,7 +66,6 @@ async function searchProduct() {
       resultDiv.appendChild(card);
     });
 
-    // CLOSE MODAL
     document.getElementById("closeModal").onclick = () => {
       document.getElementById("modal").style.display = "none";
     };
@@ -85,7 +84,7 @@ async function searchProduct() {
 
 
 /* =====================================================
-   ⭐ AUTOCOMPLETE / SUGGEST FEATURE (THÊM MỚI)
+   ⭐ AUTOCOMPLETE / SUGGEST FEATURE
 ===================================================== */
 
 async function getSuggest() {
@@ -103,28 +102,25 @@ async function getSuggest() {
 
   try {
 
-    const res =
-    await fetch(`http://localhost:3000/suggest?q=${keyword}`);
+    // ❗ FIX RENDER: bỏ localhost
+    const res = await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
 
-    const data =
-    await res.json();
+    const data = await res.json();
 
     if (!data || data.length === 0) {
       box.innerHTML = "";
       return;
     }
 
-    box.innerHTML =
-    data.map(item => `
+    box.innerHTML = data.map(item => `
       <div class="suggest-item" onclick="selectSuggest('${item}')">
         🔎 ${item}
       </div>
     `).join("");
 
   } catch (err) {
-    console.log(err);
+    console.log("SUGGEST ERROR:", err);
   }
-
 }
 
 function selectSuggest(name) {
@@ -133,6 +129,6 @@ function selectSuggest(name) {
 
   document.getElementById("suggestBox").innerHTML = "";
 
-  searchProduct(); // auto search luôn
+  searchProduct();
 
 }
