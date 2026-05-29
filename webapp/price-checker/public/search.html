@@ -4,119 +4,434 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>Price Checker</title>
 
 <link rel="stylesheet" href="style.css"/>
 
 <style>
+
 /* ================= GLOBAL ================= */
+
 body{
   margin:0;
   font-family:"Poppins", sans-serif;
-  background: linear-gradient(135deg, #0f172a, #020617);
+  background:
+    linear-gradient(135deg,#020617,#0f172a,#1e293b);
   color:white;
+  min-height:100vh;
 }
 
 /* ================= HEADER ================= */
+
 header{
-  padding:16px 30px;
-  background: rgba(15,23,42,0.7);
-  backdrop-filter: blur(12px);
-  border-bottom:1px solid rgba(255,255,255,0.05);
+
+  padding:18px 30px;
+
+  background:
+    rgba(15,23,42,0.72);
+
+  backdrop-filter:blur(12px);
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.05);
+
   position:sticky;
   top:0;
+  z-index:999;
 }
 
 header h2{
   margin:0;
-  font-size:18px;
+  font-size:20px;
   letter-spacing:1px;
 }
 
 /* ================= SEARCH BOX ================= */
+
 .search-box{
-  max-width:800px;
-  margin:40px auto 20px;
+
+  max-width:900px;
+
+  margin:40px auto 25px;
+
   display:flex;
-  gap:10px;
+
+  gap:12px;
+
   position:relative;
-  animation: fadeUp 0.5s ease;
+
+  animation:fadeUp .5s ease;
 }
 
 .search-box input{
+
   flex:1;
-  padding:14px 16px;
-  border-radius:12px;
+
+  padding:16px 18px;
+
   border:none;
   outline:none;
-  background: rgba(255,255,255,0.08);
+
+  border-radius:14px;
+
+  background:
+    rgba(255,255,255,0.08);
+
   color:white;
-  backdrop-filter: blur(10px);
+
+  font-size:15px;
+
+  backdrop-filter:blur(10px);
 }
 
 .search-box button{
-  padding:14px 18px;
+
+  padding:14px 22px;
+
   border:none;
-  border-radius:12px;
+
+  border-radius:14px;
+
   background:#38bdf8;
-  color:black;
-  font-weight:600;
+
+  color:#000;
+
+  font-weight:700;
+
   cursor:pointer;
-  transition:0.2s;
+
+  transition:.25s;
 }
 
 .search-box button:hover{
-  transform:scale(1.05);
+
+  transform:translateY(-2px);
+
+  background:#0ea5e9;
 }
 
 /* ================= SUGGEST ================= */
+
 #suggestBox{
+
   position:absolute;
+
   top:110%;
   left:0;
   right:0;
 
-  background: rgba(15,23,42,0.95);
-  backdrop-filter: blur(12px);
+  background:
+    rgba(15,23,42,0.96);
 
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,0.1);
+  border:
+    1px solid rgba(255,255,255,0.08);
 
-  z-index:9999;
+  border-radius:14px;
+
+  backdrop-filter:blur(12px);
+
+  z-index:99999;
 
   max-height:240px;
+
   overflow-y:auto;
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.45);
 }
 
 .suggest-item{
-  padding:10px;
+
+  padding:12px 15px;
+
   cursor:pointer;
-  transition:0.2s;
-  font-size:13px;
+
+  transition:.2s;
+
+  font-size:14px;
 }
 
 .suggest-item:hover{
-  background: rgba(56,189,248,0.2);
+
+  background:
+    rgba(56,189,248,0.16);
 }
 
 /* ================= RESULT ================= */
+
 #result{
-  max-width:800px;
-  margin:0 auto;
-  padding:10px 20px 50px;
+
+  max-width:900px;
+
+  margin:auto;
+
+  padding:15px 20px 50px;
+}
+
+/* ================= CARD ================= */
+
+.card-result{
+
+  background:
+    rgba(255,255,255,0.05);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  border-left:
+    4px solid #38bdf8;
+
+  border-radius:22px;
+
+  padding:24px;
+
+  margin-bottom:22px;
+
+  backdrop-filter:blur(14px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.3);
+
+  animation:fadeUp .4s ease;
+}
+
+.card-header h2{
+
+  margin:0 0 22px;
+
+  color:#38bdf8;
+
+  font-size:24px;
+}
+
+/* ================= ROW ================= */
+
+.row{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:14px 16px;
+
+  margin-bottom:12px;
+
+  border-radius:14px;
+
+  background:
+    rgba(255,255,255,0.04);
+}
+
+.label{
+
+  color:#cbd5e1;
+
+  font-size:14px;
+}
+
+.value{
+
+  font-weight:700;
+
+  font-size:16px;
+}
+
+.highlight{
+
+  border:
+    1px solid rgba(56,189,248,0.2);
+}
+
+/* ================= ICON ROW ================= */
+
+.icon-row{
+
+  margin-top:16px;
+
+  display:flex;
+
+  justify-content:flex-end;
+}
+
+/* ================= DETAIL BUTTON ================= */
+
+.detail-btn{
+
+  background:transparent;
+
+  border:
+    1px solid #38bdf8;
+
+  color:#38bdf8;
+
+  padding:8px 16px;
+
+  border-radius:999px;
+
+  cursor:pointer;
+
+  font-size:14px;
+
+  transition:.25s;
+}
+
+.detail-btn:hover{
+
+  background:#38bdf8;
+
+  color:#000;
+
+  transform:translateY(-2px);
+}
+
+/* ================= DETAIL BOX ================= */
+
+.detail-box{
+
+  margin-top:20px;
+
+  animation:fadeUp .3s ease;
+}
+
+/* ================= CHART CONTROLS ================= */
+
+.chart-controls{
+
+  max-width:900px;
+
+  margin:0 auto 25px;
+
+  display:flex;
+
+  gap:12px;
+
+  flex-wrap:wrap;
+
+  justify-content:center;
+}
+
+.chart-controls button{
+
+  padding:12px 18px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:
+    rgba(56,189,248,0.12);
+
+  color:#38bdf8;
+
+  border:
+    1px solid rgba(56,189,248,0.25);
+
+  cursor:pointer;
+
+  font-weight:700;
+
+  transition:.25s;
+}
+
+.chart-controls button:hover{
+
+  background:#38bdf8;
+
+  color:#000;
+
+  transform:translateY(-2px);
+}
+
+/* ================= CHART WRAPPER ================= */
+
+#chartWrapper{
+
+  max-width:1000px;
+
+  margin:0 auto 60px;
+
+  padding:25px;
+
+  border-radius:24px;
+
+  background:
+    rgba(255,255,255,0.05);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  backdrop-filter:blur(14px);
+
+  display:none;
+}
+
+#profitChart{
+
+  width:100% !important;
+
+  max-height:500px !important;
+}
+
+/* ================= FOOTER ================= */
+
+.search-footer{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:40px;
+
+  padding-bottom:40px;
+}
+
+.search-footer a{
+
+  color:#38bdf8;
+
+  text-decoration:none;
+
+  font-weight:600;
 }
 
 /* ================= ANIMATION ================= */
+
 @keyframes fadeUp{
+
   from{
     opacity:0;
-    transform:translateY(15px);
+    transform:translateY(12px);
   }
+
   to{
     opacity:1;
     transform:translateY(0);
   }
 }
+
+/* ================= MOBILE ================= */
+
+@media(max-width:768px){
+
+  .search-box{
+    flex-direction:column;
+  }
+
+  .row{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
+
+  .value{
+    width:100%;
+  }
+
+}
+
 </style>
 
 </head>
@@ -128,6 +443,7 @@ header h2{
 </header>
 
 <!-- SEARCH -->
+
 <div class="search-box">
 
   <input
@@ -144,23 +460,13 @@ header h2{
 
 </div>
 
-<!-- RESULT -->
-<div id="result"></div>
-<!-- FOOTER -->
-<div class="search-footer">
+<!-- CHART BUTTONS -->
 
-  <a href="/index.html">
-    <span>🏠</span>
-    <span>Home</span>
-  </a>
-
-  <a href="/upload.html">
-    <span>⬆️</span>
-    <span>Upload</span>
-  </a>
-
-</div>
 <div class="chart-controls">
+
+  <button onclick="toggleChart()">
+    📈 Show / Hide Chart
+  </button>
 
   <button onclick="changeChartType('bar')">
     📊 Bar
@@ -176,8 +482,39 @@ header h2{
 
 </div>
 
-<canvas id="profitChart"></canvas>
-<!-- CHART LIBRARY -->
+<!-- CHART -->
+
+<div id="chartWrapper">
+
+  <canvas id="profitChart"></canvas>
+
+</div>
+
+<!-- RESULT -->
+
+<div id="result"></div>
+
+<!-- FOOTER -->
+
+<div class="search-footer">
+
+  <a href="/index.html">
+    🏠 Home
+  </a>
+
+  <a href="/upload.html">
+    ⬆ Upload
+  </a>
+
+</div>
+
+<!-- CHART JS -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- SEARCH JS -->
+
+<script src="search.js"></script>
+
 </body>
 </html>
