@@ -1,3 +1,12 @@
+/* =========================
+   CHECK LOGIN
+========================= */
+
+const loggedIn = localStorage.getItem("loggedIn");
+
+if (loggedIn !== "true") {
+  window.location.href = "/login.html";
+}
 function safe(v) {
   if (v === undefined || v === null || v === "") return "0";
   return v;
