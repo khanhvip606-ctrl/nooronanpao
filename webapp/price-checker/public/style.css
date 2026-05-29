@@ -1490,7 +1490,6 @@ body{
 ========================= */
 
 .chart-controls{
-
   display:flex;
   justify-content:center;
   align-items:center;
@@ -1498,9 +1497,8 @@ body{
 
   gap:14px;
 
-  margin-top:45px;   /* 🔥 đẩy xuống tránh đụng suggest */
+  margin-top:90px;  
   margin-bottom:25px;
-
 }
 
 .chart-controls button{
