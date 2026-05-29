@@ -1485,27 +1485,110 @@ body{
   background:#38bdf8;
   color:#000;
 }
+/* =========================
+   CHART AREA
+========================= */
+
 .chart-controls{
+
   display:flex;
-  gap:12px;
   justify-content:center;
-  margin:20px 0;
+  align-items:center;
+  flex-wrap:wrap;
+
+  gap:14px;
+
+  margin-top:45px;   /* 🔥 đẩy xuống tránh đụng suggest */
+  margin-bottom:25px;
+
 }
 
 .chart-controls button{
-  padding:10px 16px;
+
+  padding:12px 22px;
+
   border:none;
-  border-radius:12px;
+  outline:none;
 
-  background:#38bdf8;
-  color:#000;
+  border-radius:14px;
 
+  background:
+  linear-gradient(
+    135deg,
+    #38bdf8,
+    #2563eb
+  );
+
+  color:white;
+
+  font-size:14px;
   font-weight:700;
+
   cursor:pointer;
 
-  transition:0.2s;
+  transition:0.25s;
+
+  box-shadow:
+  0 10px 25px rgba(56,189,248,0.25);
+
 }
 
 .chart-controls button:hover{
-  transform:scale(1.05);
+
+  transform:translateY(-2px) scale(1.03);
+
+  box-shadow:
+  0 15px 35px rgba(56,189,248,0.35);
+
+}
+
+/* =========================
+   CHART CANVAS
+========================= */
+
+#profitChart{
+
+  width:90% !important;
+  max-width:1100px;
+
+  height:500px !important;
+
+  margin:25px auto 80px auto;
+
+  display:block;
+
+  background:
+  rgba(255,255,255,0.05);
+
+  border:
+  1px solid rgba(255,255,255,0.08);
+
+  border-radius:24px;
+
+  padding:20px;
+
+  backdrop-filter:blur(14px);
+
+  box-shadow:
+  0 20px 50px rgba(0,0,0,0.45);
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  #profitChart{
+
+    height:320px !important;
+    width:95% !important;
+
+  }
+
+  .chart-controls{
+
+    margin-top:70px;
+
+  }
+
 }
