@@ -1,33 +1,28 @@
-let profitChart = null;
-let currentChartType = "bar";
-
-window.currentData = [];
-
-/* =========================
-   SAFE
-========================= */
-
-function safe(v){
-  if(v === undefined || v === null || v === ""){
-    return "0";
-  }
+function safe(v) {
+  if (v === undefined || v === null || v === "") return "0";
   return v;
 }
 
-function formatNumber(num){
-
+function formatNumber(num) {
   const n = Number(num);
-
-  if(isNaN(n)) return "0";
-
+  if (isNaN(n)) return "0";
   return n.toLocaleString("en-US");
 }
+
+/* =========================
+   GLOBAL
+========================= */
+
+let profitChart = null;
+let currentChartType = "line";
+
+window.currentData = [];
 
 /* =========================
    SEARCH PRODUCT
 ========================= */
 
-async function searchProduct(){
+async function searchProduct() {
 
   const keyword =
     document.getElementById("searchInput").value.trim();
@@ -35,24 +30,23 @@ async function searchProduct(){
   const resultDiv =
     document.getElementById("result");
 
-  if(!keyword){
+  if (!keyword) {
     alert("Enter product name");
     return;
   }
 
-  try{
+  try {
 
     const res =
       await fetch(`/search?name=${encodeURIComponent(keyword)}`);
 
-    const data =
-      await res.json();
+    const data = await res.json();
 
     window.currentData = data;
 
     resultDiv.innerHTML = "";
 
-    if(!Array.isArray(data) || data.length === 0){
+    if (!Array.isArray(data) || data.length === 0) {
 
       resultDiv.innerHTML = `
         <div class="card-result">
@@ -63,26 +57,29 @@ async function searchProduct(){
       return;
     }
 
-    data.forEach((item,index)=>{
+    data.forEach((item, index) => {
 
-      const detailId =
-        "detail-" + index;
+      const detailId = `detail-${index}`;
 
-      const card =
-        document.createElement("div");
+      const card = document.createElement("div");
 
       card.className =
         "card-result fade-in";
 
       card.innerHTML = `
-
+      
         <div class="card-header">
-          <h2>📦 ${safe(item.product)}</h2>
+
+          <h2>
+            📦 ${safe(item.product)}
+          </h2>
+
         </div>
 
         <div class="card-body">
 
           <div class="row">
+
             <span class="label">
               💰 Selling Price
             </span>
@@ -90,9 +87,11 @@ async function searchProduct(){
             <span class="value">
               ${formatNumber(item.sellPriceVND)} VND
             </span>
+
           </div>
 
           <div class="row highlight">
+
             <span class="label">
               📊 Profit Rate
             </span>
@@ -100,15 +99,19 @@ async function searchProduct(){
             <span class="value">
               ${safe(item.avgGrossRate)}
             </span>
+
           </div>
 
           <div class="icon-row">
+
             <button
               class="detail-btn"
               id="btn-${detailId}"
+              type="button"
             >
               ⓘ Click
             </button>
+
           </div>
 
         </div>
@@ -162,6 +165,7 @@ async function searchProduct(){
           </div>
 
         </div>
+
       `;
 
       resultDiv.appendChild(card);
@@ -172,29 +176,28 @@ async function searchProduct(){
       const detail =
         card.querySelector(`#${detailId}`);
 
-      btn.addEventListener("click",()=>{
+      btn.addEventListener("click", (e) => {
+
+        e.stopPropagation();
+
+        const isOpen =
+          detail.style.display === "block";
 
         detail.style.display =
-          detail.style.display === "block"
-          ? "none"
-          : "block";
+          isOpen ? "none" : "block";
 
       });
 
     });
 
-    /* 🔥 AUTO RENDER CHART */
     renderChart();
 
-  }
+  } catch (err) {
 
-  catch(err){
-
-    console.log(err);
+    console.error(err);
 
     alert("Search error");
   }
-
 }
 
 /* =========================
@@ -203,25 +206,22 @@ async function searchProduct(){
 
 function toggleChart(){
 
-  const chartBox =
-    document.getElementById("chartContainer");
+  const wrapper =
+    document.getElementById("chartWrapper");
 
   if(
-    chartBox.style.display === "none"
-    ||
-    chartBox.style.display === ""
+    wrapper.style.display === "none"
+    || wrapper.style.display === ""
   ){
 
-    chartBox.style.display = "block";
+    wrapper.style.display = "block";
 
     renderChart();
 
   }else{
 
-    chartBox.style.display = "none";
-
+    wrapper.style.display = "none";
   }
-
 }
 
 /* =========================
@@ -233,7 +233,6 @@ function changeChartType(type){
   currentChartType = type;
 
   renderChart();
-
 }
 
 /* =========================
@@ -241,9 +240,6 @@ function changeChartType(type){
 ========================= */
 
 function renderChart(){
-
-  const canvas =
-    document.getElementById("profitChart");
 
   const labels =
     window.currentData.map(i => i.product);
@@ -253,11 +249,14 @@ function renderChart(){
       Number(i.profitVND || 0)
     );
 
-  if(profitChart){
+  const ctx =
+    document.getElementById("profitChart");
+
+  if (profitChart) {
     profitChart.destroy();
   }
 
-  profitChart = new Chart(canvas, {
+  profitChart = new Chart(ctx, {
 
     type: currentChartType,
 
@@ -265,83 +264,82 @@ function renderChart(){
 
       labels,
 
-      datasets:[{
+      datasets: [{
 
-        label:"Profit (VND)",
+        label: "Profit (VND)",
 
-        data:profits,
+        data: profits,
 
-        backgroundColor:[
-          "#38bdf8",
-          "#22c55e",
-          "#f59e0b",
-          "#ef4444",
-          "#8b5cf6"
-        ],
+        borderColor: "#38bdf8",
 
-        borderColor:"#38bdf8",
+        backgroundColor:
+          "rgba(56,189,248,0.15)",
 
-        borderWidth:2,
+        fill: true,
 
-        tension:0.4,
+        tension: 0.4,
 
-        fill:true,
+        borderWidth: 3,
 
-        borderRadius:10
+        pointBackgroundColor: "#38bdf8",
+
+        pointRadius: 5
 
       }]
-
     },
 
-    options:{
+    options: {
 
-      responsive:true,
+      responsive: true,
 
-      plugins:{
-        legend:{
-          labels:{
-            color:"white"
+      plugins: {
+
+        legend: {
+
+          labels: {
+            color: "white"
           }
         }
       },
 
       scales:
-
       currentChartType === "pie"
       ? {}
       : {
 
-        x:{
-          ticks:{
-            color:"white"
+        x: {
+
+          ticks: {
+            color: "white"
           },
-          grid:{
-            display:false
+
+          grid: {
+            display: false
           }
         },
 
-        y:{
-          ticks:{
-            color:"white"
+        y: {
+
+          ticks: {
+            color: "white"
           },
-          grid:{
-            color:"rgba(255,255,255,0.05)"
+
+          grid: {
+
+            color:
+              "rgba(255,255,255,0.05)"
           }
         }
-
       }
-
     }
-
   });
-
 }
 
 /* =========================
    AUTOCOMPLETE
 ========================= */
 
-async function getSuggest(){
+async function getSuggest() {
 
   const keyword =
     document.getElementById("searchInput").value.trim();
@@ -349,46 +347,42 @@ async function getSuggest(){
   const box =
     document.getElementById("suggestBox");
 
-  if(!keyword){
+  if (!keyword) {
+
     box.innerHTML = "";
+
     return;
   }
 
-  try{
+  try {
 
     const res =
       await fetch(`/suggest?q=${encodeURIComponent(keyword)}`);
 
-    const data =
-      await res.json();
+    const data = await res.json();
 
-    if(!Array.isArray(data) || data.length === 0){
+    if (!Array.isArray(data) || data.length === 0) {
 
       box.innerHTML = "";
 
       return;
     }
 
-    box.innerHTML =
-      data.map(item => `
+    box.innerHTML = data.map(item => `
 
-        <div
-          class="suggest-item"
-          onclick="selectSuggest('${item}')"
-        >
-          🔎 ${item}
-        </div>
+      <div
+        class="suggest-item"
+        onclick="selectSuggest('${item}')"
+      >
+        🔎 ${item}
+      </div>
 
-      `).join("");
+    `).join("");
 
-  }
-
-  catch(err){
+  } catch (err) {
 
     console.log(err);
-
   }
-
 }
 
 function selectSuggest(name){
@@ -398,5 +392,4 @@ function selectSuggest(name){
   document.getElementById("suggestBox").innerHTML = "";
 
   searchProduct();
-
 }
