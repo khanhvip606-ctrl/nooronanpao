@@ -249,7 +249,11 @@ function changeChartType(type){
 
   currentChartType = type;
 
-  renderChart();
+  if(window.selectedProducts.length >= 2){
+    renderCompareChart();
+  }else{
+    renderChart();
+  }
 }
 
 /* =========================
