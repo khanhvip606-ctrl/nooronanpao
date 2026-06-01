@@ -111,17 +111,25 @@ async function searchProduct() {
 
           </div>
 
-          <div class="icon-row">
+         <div class="icon-row">
 
-            <button
-              class="detail-btn"
-              id="btn-${detailId}"
-              type="button"
-            >
-              ⓘ Click
-            </button>
+  <button
+    class="detail-btn"
+    id="btn-${detailId}"
+    type="button"
+  >
+    ⓘ Detail
+  </button>
 
-          </div>
+  <button
+    class="detail-btn compare-btn"
+    onclick="addToCompare(${index})"
+    type="button"
+  >
+    ⚖ Compare
+  </button>
+
+</div>
 
         </div>
 
