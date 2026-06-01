@@ -462,10 +462,34 @@ function addToCompare(index){
 
     compareList.style.display = "block";
 
-    compareItems.innerHTML =
-      window.selectedProducts
-        .map(p => `✅ ${p.product}`)
-        .join("<br>");
+   compareItems.innerHTML =
+  window.selectedProducts
+    .map((p, i) => `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:6px 10px;
+        border-bottom:1px solid rgba(255,255,255,0.1);
+      ">
+        <span>✅ ${p.product}</span>
+
+        <button
+          onclick="removeCompare(${i})"
+          style="
+            background:transparent;
+            border:none;
+            color:#ef4444;
+            font-size:18px;
+            cursor:pointer;
+          "
+          title="Remove"
+        >
+          ❌
+        </button>
+      </div>
+    `)
+    .join("");
   }
 
   const success =
