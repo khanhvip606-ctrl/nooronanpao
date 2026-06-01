@@ -26,7 +26,7 @@ let profitChart = null;
 let currentChartType = "line";
 
 window.currentData = [];
-
+window.selectedProducts = [];
 /* =========================
    SEARCH PRODUCT
 ========================= */
