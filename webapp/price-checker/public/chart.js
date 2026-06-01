@@ -74,6 +74,11 @@ function renderChart() {
 }
 function renderCompareChart(){
 
+  const wrapper =
+    document.getElementById("chartWrapper");
+
+  wrapper.style.display = "block";
+
   const labels =
     window.selectedProducts.map(
       p => p.product
@@ -118,6 +123,10 @@ function renderCompareChart(){
     options:{
       responsive:true
     }
+  });
+
+  console.log("COMPARE CHART CREATED");
+}
   });
 }
 /* =========================
