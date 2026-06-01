@@ -72,3 +72,51 @@ function renderChart() {
     }
   });
 }
+function renderCompareChart(){
+
+  const labels =
+    window.selectedProducts.map(
+      p => p.product
+    );
+
+  const profits =
+    window.selectedProducts.map(
+      p => Number(p.profitVND || 0)
+    );
+
+  const ctx =
+    document.getElementById("profitChart");
+
+  if(profitChart){
+    profitChart.destroy();
+  }
+
+  profitChart = new Chart(ctx,{
+
+    type:"bar",
+
+    data:{
+
+      labels,
+
+      datasets:[{
+
+        label:"Profit (VND)",
+
+        data:profits,
+
+        backgroundColor:
+          "rgba(56,189,248,0.5)",
+
+        borderColor:"#38bdf8",
+
+        borderWidth:2
+
+      }]
+    },
+
+    options:{
+      responsive:true
+    }
+  });
+}
