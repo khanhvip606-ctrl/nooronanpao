@@ -410,3 +410,188 @@ function selectSuggest(name){
 
   searchProduct();
 }
+/* =========================
+   COMPARE PRODUCT
+========================= */
+
+function addToCompare(index){
+
+  const item = window.currentData[index];
+
+  const exists =
+    window.selectedProducts.find(
+      p => p.product === item.product
+    );
+
+  if(exists){
+
+    alert("Product already selected");
+
+    return;
+  }
+
+  window.selectedProducts.push(item);
+
+  alert(
+    `${item.product} added to compare`
+  );
+}
+
+/* =========================
+   SHOW COMPARE TABLE
+========================= */
+
+function showCompare(){
+
+  if(window.selectedProducts.length < 2){
+
+    alert("Select at least 2 products");
+
+    return;
+  }
+
+  let html = `
+
+  <div class="card-result compare-card">
+
+    <h2>⚖ Product Comparison</h2>
+
+    <table
+      style="
+      width:100%;
+      border-collapse:collapse;
+      text-align:center;
+      "
+    >
+
+      <tr>
+
+        <th style="padding:10px;">Product</th>
+        <th style="padding:10px;">Price</th>
+        <th style="padding:10px;">Cost</th>
+        <th style="padding:10px;">Profit</th>
+        <th style="padding:10px;">Rate</th>
+
+      </tr>
+
+  `;
+
+  window.selectedProducts.forEach(item=>{
+
+    html += `
+
+      <tr>
+
+        <td style="padding:10px;">
+          ${item.product}
+        </td>
+
+        <td style="padding:10px;">
+          ${formatNumber(item.sellPriceVND)}
+        </td>
+
+        <td style="padding:10px;">
+          ${formatNumber(item.costVND)}
+        </td>
+
+        <td style="padding:10px;">
+          ${formatNumber(item.profitVND)}
+        </td>
+
+        <td style="padding:10px;">
+          ${item.avgGrossRate}
+        </td>
+
+      </tr>
+
+    `;
+  });
+
+  html += `
+    </table>
+  </div>
+  `;
+
+  document.getElementById("result").innerHTML += html;
+
+  renderCompareChart();
+}
+
+/* =========================
+   COMPARE CHART
+========================= */
+
+function renderCompareChart(){
+
+  const labels =
+    window.selectedProducts.map(
+      p => p.product
+    );
+
+  const profits =
+    window.selectedProducts.map(
+      p => Number(p.profitVND || 0)
+    );
+
+  const ctx =
+    document.getElementById("profitChart");
+
+  if(profitChart){
+    profitChart.destroy();
+  }
+
+  profitChart = new Chart(ctx,{
+
+    type:"bar",
+
+    data:{
+
+      labels,
+
+      datasets:[{
+
+        label:"Profit (VND)",
+
+        data:profits,
+
+        backgroundColor:
+          "rgba(56,189,248,0.5)",
+
+        borderColor:"#38bdf8",
+
+        borderWidth:2
+
+      }]
+    },
+
+    options:{
+
+      responsive:true,
+
+      plugins:{
+        legend:{
+          labels:{
+            color:"white"
+          }
+        }
+      },
+
+      scales:{
+
+        x:{
+          ticks:{
+            color:"white"
+          }
+        },
+
+        y:{
+          ticks:{
+            color:"white"
+          }
+        }
+      }
+    }
+  });
+
+  document.getElementById("chartWrapper").style.display = "block";
+}
