@@ -436,10 +436,19 @@ function addToCompare(index){
 
   if(exists){
 
-    alert("Product already selected");
+  const msg =
+    document.getElementById("compareMessage");
 
-    return;
-  }
+  msg.innerHTML =
+    "⚠️ Product already selected";
+
+  msg.style.color = "#facc15";
+  msg.style.fontWeight = "600";
+  msg.style.textAlign = "center";
+  msg.style.margin = "10px";
+
+  return;
+}
 
   window.selectedProducts.push(item);
 
