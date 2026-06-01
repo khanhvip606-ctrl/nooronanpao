@@ -127,8 +127,6 @@ function renderCompareChart(){
 
   console.log("COMPARE CHART CREATED");
 }
-  });
-}
 /* =========================
    COMPARE PRODUCT
 ========================= */
