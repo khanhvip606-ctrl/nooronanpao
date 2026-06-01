@@ -481,7 +481,6 @@ header h2{
   <button onclick="changeChartType('pie')">
     🥧 Pie
   </button>
-
 </div>
 
 <!-- CHART -->
@@ -498,7 +497,21 @@ header h2{
   <div id="compareItems"></div>
 </div>
 <div id="result"></div>
+if(exists){
 
+  const msg =
+    document.getElementById("compareMessage");
+
+  msg.innerHTML =
+    "⚠️ Product already selected";
+
+  msg.style.color = "#facc15";
+  msg.style.fontWeight = "600";
+  msg.style.textAlign = "center";
+  msg.style.margin = "10px";
+
+  return;
+}
 <!-- FOOTER -->
 
 <div class="search-footer">
