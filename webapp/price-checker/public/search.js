@@ -459,7 +459,17 @@ function addToCompare(index){
         .join("<br>");
   }
 
-  alert(`${item.product} added to compare`);
+  const success =
+  document.getElementById("compareSuccess");
+
+success.innerHTML =
+  `✅ ${item.product} added to compare`;
+
+success.style.display = "block";
+
+setTimeout(() => {
+  success.style.display = "none";
+}, 2500);
 }
 
 /* =========================
