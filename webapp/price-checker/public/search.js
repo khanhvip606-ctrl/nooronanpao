@@ -693,12 +693,27 @@ function removeCompare(index){
   const compareItems =
     document.getElementById("compareItems");
 
+  // ❌ Không còn gì → ẩn hết
   if(window.selectedProducts.length === 0){
+
     compareList.style.display = "none";
     compareItems.innerHTML = "";
+
+    // tắt chart luôn
+    const wrapper =
+      document.getElementById("chartWrapper");
+
+    wrapper.style.display = "none";
+
+    if(profitChart){
+      profitChart.destroy();
+      profitChart = null;
+    }
+
     return;
   }
 
+  // 🔁 Cập nhật lại danh sách UI
   compareItems.innerHTML =
     window.selectedProducts
       .map((p, i) => `
@@ -717,6 +732,36 @@ function removeCompare(index){
       `)
       .join("");
 
-  renderCompareChart();
+  // 🎯 Chỉ render chart khi còn >= 2 sản phẩm
+  if(window.selectedProducts.length >= 2){
+    renderCompareChart();
+  } else {
+    renderChart(); // quay về chart thường
+  }
+}
+function updateCompareUI(){
+
+  const compareItems =
+    document.getElementById("compareItems");
+
+  compareItems.innerHTML =
+    window.selectedProducts
+      .map((p, i) => `
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          padding:6px 10px;
+        ">
+          <span>✅ ${p.product}</span>
+          <button onclick="removeCompare(${i})"
+            style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;">
+            ❌
+          </button>
+        </div>
+      `)
+      .join("");
+
+  document.getElementById("compareList").style.display =
+    window.selectedProducts.length ? "block" : "none";
 }
 
