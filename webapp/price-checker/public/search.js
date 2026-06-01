@@ -683,4 +683,40 @@ function renderCompareChart(){
     block:"end"
   });
 }
+function removeCompare(index){
+
+  window.selectedProducts.splice(index, 1);
+
+  const compareList =
+    document.getElementById("compareList");
+
+  const compareItems =
+    document.getElementById("compareItems");
+
+  if(window.selectedProducts.length === 0){
+    compareList.style.display = "none";
+    compareItems.innerHTML = "";
+    return;
+  }
+
+  compareItems.innerHTML =
+    window.selectedProducts
+      .map((p, i) => `
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          padding:6px 10px;
+        ">
+          <span>✅ ${p.product}</span>
+          <button onclick="removeCompare(${i})"
+            style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;">
+            ❌
+          </button>
+        </div>
+      `)
+      .join("");
+
+  renderCompareChart();
+}
 
