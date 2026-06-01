@@ -120,3 +120,103 @@ function renderCompareChart(){
     }
   });
 }
+/* =========================
+   COMPARE PRODUCT
+========================= */
+
+function addToCompare(index){
+
+  const item = window.currentData[index];
+
+  const exists =
+    window.selectedProducts.find(
+      p => p.product === item.product
+    );
+
+  if(exists){
+    alert("Product already selected");
+    return;
+  }
+
+  window.selectedProducts.push(item);
+
+  alert(
+    `${item.product} added to compare`
+  );
+}
+
+/* =========================
+   SHOW COMPARE TABLE
+========================= */
+
+function showCompare(){
+
+  if(window.selectedProducts.length < 2){
+
+    alert("Select at least 2 products");
+
+    return;
+  }
+
+  let html = `
+
+  <div class="card-result">
+
+    <h2>⚖ Product Comparison</h2>
+
+    <table
+      style="
+      width:100%;
+      border-collapse:collapse;
+      text-align:center;
+      "
+    >
+
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Cost</th>
+        <th>Profit</th>
+        <th>Rate</th>
+      </tr>
+
+  `;
+
+  window.selectedProducts.forEach(item=>{
+
+    html += `
+
+      <tr>
+
+        <td>${item.product}</td>
+
+        <td>
+          ${formatNumber(item.sellPriceVND)}
+        </td>
+
+        <td>
+          ${formatNumber(item.costVND)}
+        </td>
+
+        <td>
+          ${formatNumber(item.profitVND)}
+        </td>
+
+        <td>
+          ${item.avgGrossRate}
+        </td>
+
+      </tr>
+
+    `;
+  });
+
+  html += `
+    </table>
+  </div>
+  `;
+
+  document.getElementById("result").innerHTML += html;
+
+  renderCompareChart();
+}
