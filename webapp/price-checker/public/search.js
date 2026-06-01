@@ -511,12 +511,22 @@ setTimeout(() => {
 
 function showCompare(){
 
-  if(window.selectedProducts.length < 2){
+if(window.selectedProducts.length < 2){
 
-    alert("Select at least 2 products");
+  const warn =
+    document.getElementById("compareWarning");
 
-    return;
-  }
+  warn.innerHTML =
+    "⚠️ Please select at least 2 products to compare";
+
+  warn.style.display = "block";
+
+  setTimeout(() => {
+    warn.style.display = "none";
+  }, 2500);
+
+  return;
+}
 
   let html = `
 
