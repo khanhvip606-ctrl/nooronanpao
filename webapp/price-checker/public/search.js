@@ -516,7 +516,11 @@ function showCompare(){
   </div>
   `;
 
-  document.getElementById("result").innerHTML += html;
+ document.getElementById("result").innerHTML += html;
+
+document.getElementById("chartWrapper").style.display = "block";
+
+renderCompareChart();
 
   renderCompareChart();
 }
@@ -539,7 +543,10 @@ function renderCompareChart(){
 
   const ctx =
     document.getElementById("profitChart");
+   const wrapper =
+     document.getElementById("chartWrapper");
 
+wrapper.style.display = "block";
   if(profitChart){
     profitChart.destroy();
   }
