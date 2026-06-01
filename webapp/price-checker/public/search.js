@@ -240,7 +240,6 @@ function toggleChart(){
     wrapper.style.display = "none";
   }
 }
-
 /* =========================
    CHANGE CHART TYPE
 ========================= */
@@ -250,12 +249,14 @@ function changeChartType(type){
   currentChartType = type;
 
   if(window.selectedProducts.length >= 2){
+
     renderCompareChart();
+
   }else{
+
     renderChart();
   }
 }
-
 /* =========================
    RENDER CHART
 ========================= */
@@ -293,8 +294,14 @@ function renderChart(){
 
         borderColor: "#38bdf8",
 
-        backgroundColor:
-          "rgba(56,189,248,0.15)",
+       backgroundColor:[
+  "rgba(56,189,248,0.7)",
+  "rgba(34,197,94,0.7)",
+  "rgba(249,115,22,0.7)",
+  "rgba(168,85,247,0.7)",
+  "rgba(239,68,68,0.7)",
+  "rgba(234,179,8,0.7)"
+],
 
         fill: true,
 
@@ -520,15 +527,12 @@ function showCompare(){
 
 document.getElementById("chartWrapper").style.display = "block";
 
-renderCompareChart();
-
   renderCompareChart();
 }
 
 /* =========================
    COMPARE CHART
 ========================= */
-
 function renderCompareChart(){
 
   const labels =
@@ -543,17 +547,19 @@ function renderCompareChart(){
 
   const ctx =
     document.getElementById("profitChart");
-   const wrapper =
-     document.getElementById("chartWrapper");
 
-wrapper.style.display = "block";
+  const wrapper =
+    document.getElementById("chartWrapper");
+
+  wrapper.style.display = "block";
+
   if(profitChart){
     profitChart.destroy();
   }
 
   profitChart = new Chart(ctx,{
 
-   type: currentChartType,
+    type: currentChartType,
 
     data:{
 
@@ -565,13 +571,21 @@ wrapper.style.display = "block";
 
         data:profits,
 
-        backgroundColor:
-          "rgba(56,189,248,0.5)",
+        backgroundColor:[
+          "rgba(56,189,248,0.7)",
+          "rgba(34,197,94,0.7)",
+          "rgba(249,115,22,0.7)",
+          "rgba(168,85,247,0.7)",
+          "rgba(239,68,68,0.7)"
+        ],
 
         borderColor:"#38bdf8",
 
-        borderWidth:2
+        borderWidth:2,
 
+        fill:true,
+
+        tension:0.4
       }]
     },
 
@@ -587,7 +601,10 @@ wrapper.style.display = "block";
         }
       },
 
-      scales:{
+      scales:
+      currentChartType === "pie"
+      ? {}
+      : {
 
         x:{
           ticks:{
@@ -604,5 +621,9 @@ wrapper.style.display = "block";
     }
   });
 
-  document.getElementById("chartWrapper").style.display = "block";
+  wrapper.scrollIntoView({
+    behavior:"smooth",
+    block:"end"
+  });
 }
+
