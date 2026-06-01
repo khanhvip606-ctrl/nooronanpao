@@ -79,6 +79,11 @@ function renderCompareChart(){
 
   wrapper.style.display = "block";
 
+  wrapper.scrollIntoView({
+    behavior:"smooth",
+    block:"end"
+  });
+
   const labels =
     window.selectedProducts.map(
       p => p.product
@@ -98,7 +103,7 @@ function renderCompareChart(){
 
   profitChart = new Chart(ctx,{
 
-    type:"bar",
+    type: currentChartType,
 
     data:{
 
@@ -110,22 +115,55 @@ function renderCompareChart(){
 
         data:profits,
 
-        backgroundColor:
-          "rgba(56,189,248,0.5)",
+        backgroundColor:[
+          "rgba(56,189,248,0.6)",
+          "rgba(34,197,94,0.6)",
+          "rgba(249,115,22,0.6)",
+          "rgba(168,85,247,0.6)",
+          "rgba(239,68,68,0.6)"
+        ],
 
         borderColor:"#38bdf8",
 
-        borderWidth:2
+        borderWidth:2,
 
+        fill:true,
+
+        tension:0.4
       }]
     },
 
     options:{
-      responsive:true
+
+      responsive:true,
+
+      plugins:{
+        legend:{
+          labels:{
+            color:"white"
+          }
+        }
+      },
+
+      scales:
+      currentChartType === "pie"
+      ? {}
+      : {
+
+        x:{
+          ticks:{
+            color:"white"
+          }
+        },
+
+        y:{
+          ticks:{
+            color:"white"
+          }
+        }
+      }
     }
   });
-
-  console.log("COMPARE CHART CREATED");
 }
 /* =========================
    COMPARE PRODUCT
