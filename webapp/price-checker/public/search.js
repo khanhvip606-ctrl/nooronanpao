@@ -443,9 +443,23 @@ function addToCompare(index){
 
   window.selectedProducts.push(item);
 
-  alert(
-    `${item.product} added to compare`
-  );
+  const compareList =
+    document.getElementById("compareList");
+
+  const compareItems =
+    document.getElementById("compareItems");
+
+  if(compareList && compareItems){
+
+    compareList.style.display = "block";
+
+    compareItems.innerHTML =
+      window.selectedProducts
+        .map(p => `✅ ${p.product}`)
+        .join("<br>");
+  }
+
+  alert(`${item.product} added to compare`);
 }
 
 /* =========================
