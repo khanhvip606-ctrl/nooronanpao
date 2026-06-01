@@ -546,7 +546,7 @@ function renderCompareChart(){
 
   profitChart = new Chart(ctx,{
 
-    type:"bar",
+   type: currentChartType,
 
     data:{
 
