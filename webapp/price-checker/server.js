@@ -45,6 +45,8 @@ const upload = multer({
 ========================= */
 
 let products = [];
+const USD_RATE = 26000;
+const TWD_RATE = 840;
 
 /* =========================
    UPLOAD EXCEL (FIX RENDER)
@@ -133,9 +135,12 @@ const formatDate = (v) => {
   if (!v) return "";
 
   const d = new Date(v);
-  if (isNaN(d.getTime())) return v;
 
-  return d.toISOString().split("T")[0]; // YYYY-MM-DD
+  if (isNaN(d.getTime())) {
+    return String(v);
+  }
+
+  return d.toISOString().split("T")[0];
 };
 
 /* =========================
@@ -266,7 +271,7 @@ app.get("/search", (req, res) => {
           safeNumber(gross),
 
         avgGrossRate:
-          rate + "%"
+          rate + "%" ,
         invDate: 
          formatDate(invDate) 
       };
