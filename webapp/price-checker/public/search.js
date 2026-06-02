@@ -442,18 +442,18 @@ function addToCompare(index){
 
   if(exists){
 
-  const msg =
-    document.getElementById("compareMessage");
+  const msg = document.getElementById("compareMessage");
 
-  msg.innerHTML =
-    "⚠️ Product already selected";
-
+if(msg){
+  msg.innerHTML = "⚠️ Product already selected";
   msg.style.color = "#facc15";
-  msg.style.fontWeight = "600";
-  msg.style.textAlign = "center";
-  msg.style.margin = "10px";
 
-  return;
+  setTimeout(() => {
+    msg.innerHTML = "";
+  }, 2500);
+}
+
+return;
 }
 
   window.selectedProducts.push(item);
@@ -520,7 +520,9 @@ function showCompare(){
 if(window.selectedProducts.length < 2){
 
   const warn =
-    document.getElementById("compareWarning");
+  document.getElementById("compareWarning");
+
+if(warn){
 
   warn.innerHTML =
     "⚠️ Please select at least 2 products to compare";
@@ -530,7 +532,7 @@ if(window.selectedProducts.length < 2){
   setTimeout(() => {
     warn.style.display = "none";
   }, 2500);
-
+}
   return;
 }
 
@@ -598,7 +600,15 @@ if(window.selectedProducts.length < 2){
   </div>
   `;
 
- document.getElementById("result").innerHTML += html;
+ const oldCompare =
+  document.querySelector(".compare-card");
+
+if(oldCompare){
+  oldCompare.remove();
+}
+
+document.getElementById("result")
+  .insertAdjacentHTML("beforeend", html);
 
 document.getElementById("chartWrapper").style.display = "block";
 
@@ -751,10 +761,21 @@ function removeCompare(index){
       .join("");
 
   // 🎯 Chỉ render chart khi còn >= 2 sản phẩm
-  if(window.selectedProducts.length >= 2){
-    renderCompareChart();
-  } else {
-    renderChart(); // quay về chart thường
+ if(window.selectedProducts.length >= 2){
+
+  renderCompareChart();
+
+}else{
+
+  const wrapper =
+    document.getElementById("chartWrapper");
+
+  wrapper.style.display = "none";
+
+  if(profitChart){
+    profitChart.destroy();
+    profitChart = null;
+  }
   }
 }
 function updateCompareUI(){
