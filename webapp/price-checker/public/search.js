@@ -585,7 +585,9 @@ if(window.selectedProducts.length < 2){
         <td style="padding:10px;">
           ${item.avgGrossRate}
         </td>
-
+         <td style="padding:10px;">
+           ${safe(item.invDate)}
+         </td>
       </tr>
 
     `;
