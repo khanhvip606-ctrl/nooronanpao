@@ -156,19 +156,39 @@ app.get("/search", (req, res) => {
     return res.json([]);
   }
 
-  const result =
-    products.filter((p) => {
+  const from = req.query.from || "";
+const to = req.query.to || "";
 
-      const name =
-        String(p["Name of goods"] || "")
-        .toLowerCase();
+const result = products.filter((p) => {
 
-      return name.includes(
-        keyword.toLowerCase()
-      );
+  const name =
+    String(p["Name of goods"] || "")
+    .toLowerCase();
 
-    });
+  if (
+    !name.includes(keyword.toLowerCase())
+  ) {
+    return false;
+  }
 
+  const invDate =
+    formatDate(
+      p["Inv Date"] ||
+      p["Invoice Date"] ||
+      p["Date"] ||
+      ""
+    );
+
+  if (from && invDate < from) {
+    return false;
+  }
+
+  if (to && invDate > to) {
+    return false;
+  }
+
+  return true;
+});
  
   const finalResult =
     result.map((p) => {
