@@ -129,6 +129,14 @@ const safeNumber = (v) => {
     : n;
 
 };
+const formatDate = (v) => {
+  if (!v) return "";
+
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return v;
+
+  return d.toISOString().split("T")[0]; // YYYY-MM-DD
+};
 
 /* =========================
    SEARCH PRODUCT
@@ -156,12 +164,14 @@ app.get("/search", (req, res) => {
 
     });
 
-  const USD_RATE = 26000;
-  const TWD_RATE = 840;
-
+ 
   const finalResult =
     result.map((p) => {
-
+      const invDate =
+            p["Inv Date"] ||
+            p["Invoice Date"] ||
+            p["Date"] ||
+            "";
       const sellPrice =
         safeNumber(p["Unit price"]);
 
@@ -213,7 +223,7 @@ app.get("/search", (req, res) => {
         quantity > 0
           ? costRaw / quantity
           : costRaw;
-
+      
       return {
 
         product:
@@ -257,7 +267,7 @@ app.get("/search", (req, res) => {
 
         avgGrossRate:
           rate + "%"
-
+        invDate: formatDate(invDate) 
       };
 
     });
