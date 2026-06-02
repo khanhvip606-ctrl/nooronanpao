@@ -180,8 +180,8 @@ async function searchProduct() {
               ${safe(item.quantity)} Kg
             </span>
           </div>
-         <div class="row">
-              <span class="label">📅 Invoice Date</span>
+           <div class="row">
+              <span class="label">📅 Inv Date</span>
             
               <span class="value">
                 ${safe(item.invDate)}
