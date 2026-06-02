@@ -165,24 +165,24 @@ const result = products.filter((p) => {
     String(p["Name of goods"] || "")
     .toLowerCase();
 
-  if (
-    !name.includes(keyword.toLowerCase())
-  ) {
+  // lọc theo tên sản phẩm
+  if (!name.includes(keyword.toLowerCase())) {
     return false;
   }
 
-  const invDate =
-    formatDate(
-      p["Inv Date"] ||
-      p["Invoice Date"] ||
-      p["Date"] ||
-      ""
-    );
+  const invDate = formatDate(
+    p["Inv Date"] ||
+    p["Invoice Date"] ||
+    p["Date"] ||
+    ""
+  );
 
+  // lọc từ ngày
   if (from && invDate < from) {
     return false;
   }
 
+  // lọc đến ngày
   if (to && invDate > to) {
     return false;
   }
