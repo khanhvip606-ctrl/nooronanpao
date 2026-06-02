@@ -46,9 +46,16 @@ async function searchProduct() {
 
   try {
 
-    const res =
-      await fetch(`/search?name=${encodeURIComponent(keyword)}`);
+    const from =
+  document.getElementById("fromDate").value;
 
+const to =
+  document.getElementById("toDate").value;
+
+const res =
+  await fetch(
+    `/search?name=${encodeURIComponent(keyword)}&from=${from}&to=${to}`
+  );
     const data = await res.json();
 
     window.currentData = data;
