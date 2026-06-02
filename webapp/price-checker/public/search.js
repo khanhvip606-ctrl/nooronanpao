@@ -555,7 +555,7 @@ if(window.selectedProducts.length < 2){
         <th style="padding:10px;">Cost</th>
         <th style="padding:10px;">Profit</th>
         <th style="padding:10px;">Rate</th>
-
+        <th style="padding:10px;">Date</th>
       </tr>
 
   `;
