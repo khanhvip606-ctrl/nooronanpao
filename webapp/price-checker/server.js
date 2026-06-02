@@ -267,7 +267,8 @@ app.get("/search", (req, res) => {
 
         avgGrossRate:
           rate + "%"
-        invDate: formatDate(invDate) 
+        invDate: 
+         formatDate(invDate) 
       };
 
     });
