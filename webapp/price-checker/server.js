@@ -76,7 +76,7 @@ app.post(
         firstSheet
       );
 
-      products = data;
+      products.push(...data);
 
       console.log(
         "TOTAL PRODUCTS:",
