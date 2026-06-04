@@ -171,11 +171,20 @@ const result = products.filter((p) => {
   }
 
   const invDate = formatDate(
-    p["Inv Date"] ||
-    p["Invoice Date"] ||
-    p["Date"] ||
-    ""
-  );
+  p["Inv Date"] ||
+  p["Invoice Date"] ||
+  p["Date"] ||
+  ""
+);
+
+console.log(
+  "DATE:",
+  invDate,
+  "FROM:",
+  from,
+  "TO:",
+  to
+);
 
   // lọc từ ngày
   if (from && invDate < from) {
