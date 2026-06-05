@@ -1,97 +1,51 @@
 async function searchCustomer() {
 
-  const keyword =
-    document
-      .getElementById("keyword")
-      .value
-      .trim();
+  const keyword = document.getElementById("keyword").value.trim();
 
-  if(!keyword){
+  if (!keyword) {
     alert("Enter customer name");
     return;
   }
 
-  const resultDiv =
-    document.getElementById("result");
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "Loading...";
 
-  resultDiv.innerHTML =
-    "Loading...";
+  try {
 
-  try{
+    const res = await fetch(`/customer-search?keyword=${encodeURIComponent(keyword)}`);
+    const data = await res.json();
 
-    const res =
-      await fetch(
-        `/customer-search?keyword=${encodeURIComponent(keyword)}`
-      );
-
-    const data =
-      await res.json();
-
-    if(!data.length){
-
-      resultDiv.innerHTML = `
-        <div class="card">
-          No customer found
-        </div>
-      `;
-
+    if (!data.length) {
+      resultDiv.innerHTML = `<div class="card">No customer found</div>`;
       return;
     }
 
-    resultDiv.innerHTML =
-      data.map(c => {
+    resultDiv.innerHTML = data.map(c => {
 
-        const code =
-          c["Customer ID / Code"] || "";
+      const code = c["Customer ID / Code"] || "";
+      const name = c["Customer Short Name"] || "";
+      const address = c["Address"] || c["Customer Address"] || c["Address 1"] || "";
 
-        const name =
-          c["Customer Short Name"] || "";
+      return `
+        <div class="card">
+          <h3>${name}</h3>
+          <p><b>Code:</b> ${code}</p>
+          <p><b>Address:</b> ${address}</p>
 
-        const address =
-          c["Address"] ||
-          c["Customer Address"] ||
-          c["Address 1"] ||
-          "";
-     
-        return `
+          <button class="map-btn"
+            onclick="openMap('${address.replace(/'/g, "\\'")}')">
+            📍 Open Map
+          </button>
+        </div>
+      `;
+    }).join("");
 
-          <div class="card">
-
-            <h3>${name}</h3>
-
-            <p>
-              <b>Code:</b>
-              ${code}
-            </p>
-
-            <p>
-              <b>Address:</b>
-              ${address}
-            </p>
-
-                <button
-        class="map-btn"
-        onclick="openMap('${address.replace(/'/g, "\\'")}')"
-      >
-        📍 Open Map
-      </button>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-  }catch(err){
-
+  } catch (err) {
     console.log(err);
-
-    resultDiv.innerHTML = `
-      <div class="card">
-        Search Error
-      </div>
-    `;
-  window.openMap = async function(address) {
+    resultDiv.innerHTML = `<div class="card">Search Error</div>`;
+  }
+}
+window.openMap = async function(address) {
 
   console.log("CLICK MAP:", address);
 
@@ -105,7 +59,7 @@ async function searchCustomer() {
 
     console.log("GEOCODE RESULT:", data);
 
-    if (!data) {
+    if (!data || !data.lat) {
       alert("Cannot find location");
       return;
     }
