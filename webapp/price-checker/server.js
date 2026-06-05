@@ -85,7 +85,7 @@ if (
   firstRow["Customer Short Name"]
 ) {
 
-  customers.push(...data);
+  customers = data;
 
   console.log(
     "TOTAL CUSTOMERS:",
@@ -99,7 +99,7 @@ if (
 }
 
 // FILE SẢN PHẨM
-products.push(...data);
+products = data;
 
 console.log(
   "TOTAL PRODUCTS:",
