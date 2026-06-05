@@ -383,6 +383,30 @@ app.get("/customer-search", (req, res) => {
   res.json(result);
 
 });
+app.get("/geocode", async (req, res) => {
+  try {
+    const address = req.query.address;
+
+    const url =
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.length) {
+      return res.json(null);
+    }
+
+    res.json({
+      lat: data[0].lat,
+      lng: data[0].lon
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "geocode error" });
+  }
+});
 /* =========================
    SERVER
 ========================= */
