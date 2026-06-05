@@ -80,10 +80,29 @@ XLSX.utils.sheet_to_json(
 const firstRow = data[0] || {};
 
 // FILE KHÁCH HÀNG
-if (
-  firstRow["Customer ID / Code"] ||
-  firstRow["Customer Short Name"]
-) {
+const keys = Object.keys(firstRow || {});
+
+const isCustomerFile =
+  keys.some(k =>
+    k.toLowerCase().includes("customer") ||
+    k.toLowerCase().includes("cust") ||
+    k.toLowerCase().includes("khách") ||
+    k.toLowerCase().includes("khach") ||
+    k.toLowerCase().includes("客")
+  );
+
+if (isCustomerFile) {
+
+  customers = data;
+
+  console.log("TOTAL CUSTOMERS:", customers.length);
+  console.log("SAMPLE:", customers[0]);
+
+  return res.json({
+    message: "Customer Upload Success",
+    total: customers.length
+  });
+}
 
   customers = data;
 
@@ -375,22 +394,23 @@ app.get("/suggest", (req, res) => {
 
 app.get("/customer-search", (req, res) => {
 
+app.get("/customer-search", (req, res) => {
+
   const keyword =
     (req.query.keyword || "").toLowerCase();
 
   const result = customers.filter(c => {
 
-    const code =
-      String(c["Customer ID / Code"] || "")
-      .toLowerCase();
+    return Object.values(c)
+      .join(" ")
+      .toLowerCase()
+      .includes(keyword);
 
-    const name =
-      String(c["Customer Short Name"] || "")
-      .toLowerCase();
+  });
 
-    return (
-      code.includes(keyword) ||
-      name.includes(keyword)
+  res.json(result);
+
+});
     );
 
   });
