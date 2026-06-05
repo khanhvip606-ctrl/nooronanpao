@@ -45,9 +45,10 @@ const upload = multer({
 ========================= */
 
 let products = [];
+let customers = [];
 const USD_RATE = 26000;
 const TWD_RATE = 840;
-let customers = [];
+
 /* =========================
    UPLOAD EXCEL (FIX RENDER)
 ========================= */
