@@ -91,7 +91,9 @@ async function searchCustomer() {
         Search Error
       </div>
     `;
-    async function openMap(address) {
+  window.openMap = async function(address) {
+
+  console.log("CLICK MAP:", address);
 
   try {
 
@@ -100,6 +102,8 @@ async function searchCustomer() {
     );
 
     const data = await res.json();
+
+    console.log("GEOCODE RESULT:", data);
 
     if (!data) {
       alert("Cannot find location");
@@ -115,6 +119,4 @@ async function searchCustomer() {
     console.log(err);
     alert("Map error");
   }
-}
-  }
-}
+};
