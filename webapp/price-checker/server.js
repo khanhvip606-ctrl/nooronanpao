@@ -409,7 +409,6 @@ app.get("/customer-search", (req, res) => {
   res.json(result);
 
 });
-
 /* =========================
    SERVER
 ========================= */
