@@ -72,28 +72,44 @@ app.post(
       const firstSheet =
       workbook.Sheets[sheetName];
 
-      const data =
-      XLSX.utils.sheet_to_json(
-        firstSheet
-      );
+     const data =
+XLSX.utils.sheet_to_json(
+  firstSheet
+);
 
-      products.push(...data);
+const firstRow = data[0] || {};
 
-      console.log(
-        "TOTAL PRODUCTS:",
-        products.length
-      );
+// FILE KHÁCH HÀNG
+if (
+  firstRow["Customer ID / Code"] ||
+  firstRow["Customer Short Name"]
+) {
 
-      res.json({
+  customers.push(...data);
 
-        message:
-        "Upload thành công",
+  console.log(
+    "TOTAL CUSTOMERS:",
+    customers.length
+  );
 
-        total:
-        products.length
+  return res.json({
+    message: "Customer Upload Success",
+    total: customers.length
+  });
+}
 
-      });
+// FILE SẢN PHẨM
+products.push(...data);
 
+console.log(
+  "TOTAL PRODUCTS:",
+  products.length
+);
+
+res.json({
+  message: "Upload thành công",
+  total: products.length
+});
     }
 
     catch (err) {
@@ -318,7 +334,7 @@ console.log(
 });
 
 /* =========================
-   ⭐ SUGGEST AUTOCOMPLETE (NEW)
+   SUGGEST AUTOCOMPLETE
 ========================= */
 
 app.get("/suggest", (req, res) => {
@@ -350,6 +366,36 @@ app.get("/suggest", (req, res) => {
     res.json([]);
 
   }
+
+});
+
+/* =========================
+   CUSTOMER SEARCH
+========================= */
+
+app.get("/customer-search", (req, res) => {
+
+  const keyword =
+    (req.query.keyword || "").toLowerCase();
+
+  const result = customers.filter(c => {
+
+    const code =
+      String(c["Customer ID / Code"] || "")
+      .toLowerCase();
+
+    const name =
+      String(c["Customer Short Name"] || "")
+      .toLowerCase();
+
+    return (
+      code.includes(keyword) ||
+      name.includes(keyword)
+    );
+
+  });
+
+  res.json(result);
 
 });
 
