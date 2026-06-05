@@ -1,1 +1,252 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Customer Map</title>
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"
+/>
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins,sans-serif;
+background:
+linear-gradient(
+135deg,
+#020617,
+#0f172a,
+#1e293b
+);
+color:white;
+min-height:100vh;
+}
+
+header{
+
+padding:18px 30px;
+
+background:
+rgba(15,23,42,.75);
+
+backdrop-filter:blur(12px);
+
+border-bottom:
+1px solid rgba(255,255,255,.05);
+
+position:sticky;
+top:0;
+z-index:999;
+}
+
+header h2{
+margin:0;
+color:#38bdf8;
+}
+
+.search-box{
+
+max-width:1000px;
+
+margin:30px auto;
+
+display:flex;
+
+gap:12px;
+
+padding:0 20px;
+}
+
+.search-box input{
+
+flex:1;
+
+padding:16px;
+
+border:none;
+
+border-radius:14px;
+
+background:
+rgba(255,255,255,.08);
+
+color:white;
+
+outline:none;
+}
+
+.search-box button{
+
+padding:14px 22px;
+
+border:none;
+
+border-radius:14px;
+
+background:#38bdf8;
+
+color:black;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.3s;
+}
+
+.search-box button:hover{
+
+background:#0ea5e9;
+
+transform:translateY(-2px);
+}
+
+#map{
+
+height:550px;
+
+max-width:1200px;
+
+margin:auto;
+
+border-radius:24px;
+
+overflow:hidden;
+
+border:
+1px solid rgba(255,255,255,.08);
+
+box-shadow:
+0 15px 40px rgba(0,0,0,.3);
+}
+
+#result{
+
+max-width:1200px;
+
+margin:30px auto;
+
+padding:0 20px;
+}
+
+.customer-card{
+
+background:
+rgba(255,255,255,.05);
+
+border:
+1px solid rgba(255,255,255,.08);
+
+border-left:
+4px solid #38bdf8;
+
+border-radius:20px;
+
+padding:20px;
+
+margin-bottom:15px;
+
+backdrop-filter:blur(12px);
+}
+
+.customer-card h3{
+
+margin-top:0;
+
+color:#38bdf8;
+}
+
+.customer-card button{
+
+background:#38bdf8;
+
+border:none;
+
+padding:10px 15px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:700;
+}
+
+.customer-card button:hover{
+
+background:#0ea5e9;
+}
+
+.footer{
+
+text-align:center;
+
+padding:30px;
+}
+
+.footer a{
+
+color:#38bdf8;
+
+text-decoration:none;
+
+font-weight:600;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h2>
+📍 CUSTOMER MAP
+</h2>
+
+</header>
+
+<div class="search-box">
+
+<input
+id="keyword"
+placeholder="Customer Code / Name..."
+
+>
+
+<button onclick="searchCustomer()">
+SEARCH
+</button>
+
+</div>
+
+<div id="map"></div>
+
+<div id="result"></div>
+
+<div class="footer">
+
+<a href="/">
+🏠 Back Home
+</a>
+
+</div>
+
+<script
+src="https://unpkg.com/leaflet/dist/leaflet.js">
+</script>
+
+<script src="customer-map.js"></script>
+
+</body>
+
+</html>
 
