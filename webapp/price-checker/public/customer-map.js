@@ -1,5 +1,4 @@
 async function searchCustomer() {
-
   const keyword = document.getElementById("keyword").value.trim();
 
   if (!keyword) {
@@ -11,7 +10,6 @@ async function searchCustomer() {
   resultDiv.innerHTML = "Loading...";
 
   try {
-
     const res = await fetch(`/customer-search?keyword=${encodeURIComponent(keyword)}`);
     const data = await res.json();
 
@@ -21,7 +19,6 @@ async function searchCustomer() {
     }
 
     resultDiv.innerHTML = data.map(c => {
-
       const code = c["Customer ID / Code"] || "";
       const name = c["Customer Short Name"] || "";
       const address = c["Address"] || c["Customer Address"] || c["Address 1"] || "";
@@ -50,11 +47,7 @@ window.openMap = async function(address) {
   console.log("CLICK MAP:", address);
 
   try {
-
-    const res = await fetch(
-      `/geocode?address=${encodeURIComponent(address)}`
-    );
-
+    const res = await fetch(`/geocode?address=${encodeURIComponent(address)}`);
     const data = await res.json();
 
     console.log("GEOCODE RESULT:", data);
@@ -64,9 +57,7 @@ window.openMap = async function(address) {
       return;
     }
 
-    const url =
-      `https://www.google.com/maps?q=${data.lat},${data.lng}`;
-
+    const url = `https://www.google.com/maps?q=${data.lat},${data.lng}`;
     window.open(url, "_blank");
 
   } catch (err) {
