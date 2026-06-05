@@ -52,8 +52,7 @@ async function searchCustomer() {
           c["Customer Address"] ||
           c["Address 1"] ||
           "";
-        const mapUrl =
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + " " + address + ", Vietnam")}`;
+     
         return `
 
           <div class="card">
@@ -70,13 +69,12 @@ async function searchCustomer() {
               ${address}
             </p>
 
-            <a
-              class="map-btn"
-              href="${mapUrl}"
-              target="_blank"
-            >
-              📍 Open Google Maps
-            </a>
+                <button
+        class="map-btn"
+        onclick="openMap('${address.replace(/'/g, "\\'")}')"
+      >
+        📍 Open Map
+      </button>
 
           </div>
 
@@ -93,5 +91,30 @@ async function searchCustomer() {
         Search Error
       </div>
     `;
+    async function openMap(address) {
+
+  try {
+
+    const res = await fetch(
+      `/geocode?address=${encodeURIComponent(address)}`
+    );
+
+    const data = await res.json();
+
+    if (!data) {
+      alert("Cannot find location");
+      return;
+    }
+
+    const url =
+      `https://www.google.com/maps?q=${data.lat},${data.lng}`;
+
+    window.open(url, "_blank");
+
+  } catch (err) {
+    console.log(err);
+    alert("Map error");
+  }
+}
   }
 }
