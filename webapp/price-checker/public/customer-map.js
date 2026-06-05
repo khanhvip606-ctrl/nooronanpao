@@ -54,7 +54,7 @@ async function searchCustomer() {
           "";
 
         const mapUrl =
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ", " + address + ", Vietnam")}`;
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address + ", Vietnam")}`;
         return `
 
           <div class="card">
