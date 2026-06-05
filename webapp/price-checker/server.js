@@ -53,99 +53,73 @@ const TWD_RATE = 840;
    UPLOAD EXCEL (FIX RENDER)
 ========================= */
 
-app.post(
-  "/upload",
-  upload.single("excel"),
-  (req, res) => {
+app.post("/upload", upload.single("excel"), (req, res) => {
 
-    try {
+  try {
 
-      const workbook =
-      XLSX.read(
-        req.file.buffer,
-        { type: "buffer" }
-      );
-
-      const sheetName =
-      workbook.SheetNames[0];
-
-      const firstSheet =
-      workbook.Sheets[sheetName];
-
-     const data =
-XLSX.utils.sheet_to_json(
-  firstSheet
-);
-
-const firstRow = data[0] || {};
-
-// FILE KHÁCH HÀNG
-const keys = Object.keys(firstRow || {});
-
-const isCustomerFile =
-  keys.some(k =>
-    k.toLowerCase().includes("customer") ||
-    k.toLowerCase().includes("cust") ||
-    k.toLowerCase().includes("khách") ||
-    k.toLowerCase().includes("khach") ||
-    k.toLowerCase().includes("客")
-  );
-
-if (isCustomerFile) {
-
-  customers = data;
-
-  console.log("TOTAL CUSTOMERS:", customers.length);
-  console.log("SAMPLE:", customers[0]);
-
-  return res.json({
-    message: "Customer Upload Success",
-    total: customers.length
-  });
-}
-
-  customers = data;
-
-  console.log(
-    "TOTAL CUSTOMERS:",
-    customers.length
-  );
-
-  return res.json({
-    message: "Customer Upload Success",
-    total: customers.length
-  });
-}
-
-// FILE SẢN PHẨM
-products = data;
-
-console.log(
-  "TOTAL PRODUCTS:",
-  products.length
-);
-
-res.json({
-  message: "Upload thành công",
-  total: products.length
-});
-    }
-
-    catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-
-        error:
-        "Lỗi đọc file Excel"
-
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No file uploaded"
       });
-
     }
 
+    const workbook = XLSX.read(req.file.buffer, {
+      type: "buffer"
+    });
+
+    const sheetName = workbook.SheetNames[0];
+
+    const firstSheet = workbook.Sheets[sheetName];
+
+    const data = XLSX.utils.sheet_to_json(firstSheet);
+
+    if (!data || data.length === 0) {
+      return res.status(400).json({
+        error: "Excel is empty"
+      });
+    }
+
+    const firstRow = data[0] || {};
+    const keys = Object.keys(firstRow || {});
+
+    const isCustomerFile = keys.some(k =>
+      k.toLowerCase().includes("customer") ||
+      k.toLowerCase().includes("cust") ||
+      k.toLowerCase().includes("khach") ||
+      k.toLowerCase().includes("khách") ||
+      k.toLowerCase().includes("客")
+    );
+
+    if (isCustomerFile) {
+
+      customers = data;
+
+      console.log("TOTAL CUSTOMERS:", customers.length);
+
+      return res.json({
+        message: "Customer Upload Success",
+        total: customers.length
+      });
+    }
+
+    products = data;
+
+    console.log("TOTAL PRODUCTS:", products.length);
+
+    res.json({
+      message: "Upload thành công",
+      total: products.length
+    });
+
+  } catch (err) {
+    console.log(err);
+
+    res.status(500).json({
+      error: "Lỗi đọc file Excel"
+    });
   }
-);
+
+});
 
 /* =========================
    SAFE NUMBER
