@@ -394,8 +394,6 @@ app.get("/suggest", (req, res) => {
 
 app.get("/customer-search", (req, res) => {
 
-app.get("/customer-search", (req, res) => {
-
   const keyword =
     (req.query.keyword || "").toLowerCase();
 
@@ -405,13 +403,6 @@ app.get("/customer-search", (req, res) => {
       .join(" ")
       .toLowerCase()
       .includes(keyword);
-
-  });
-
-  res.json(result);
-
-});
-    );
 
   });
 
