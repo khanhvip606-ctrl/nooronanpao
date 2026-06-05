@@ -52,9 +52,8 @@ async function searchCustomer() {
           c["Customer Address"] ||
           c["Address 1"] ||
           "";
-
         const mapUrl =
-  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address + ", Vietnam")}`;
+          `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ", " + address + ", Vietnam")}`;
         return `
 
           <div class="card">
