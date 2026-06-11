@@ -383,6 +383,24 @@ app.get("/customer-search", (req, res) => {
   res.json(result);
 
 });
+app.get("/customer-suggest", (req, res) => {
+
+  const keyword =
+    (req.query.q || "").toLowerCase();
+
+  if (!keyword) {
+    return res.json([]);
+  }
+
+  const result = customers
+    .map(c => c["Customer Short Name"] || "")
+    .filter(name =>
+      name.toLowerCase().includes(keyword)
+    )
+    .slice(0, 10);
+
+  res.json(result);
+});
 
 /* =========================
    SERVER
