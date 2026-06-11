@@ -31,6 +31,25 @@ async function searchCustomer() {
           <p><b>Address:</b> ${address}</p>
 
         <a
+        const keywordInput =
+  document.getElementById("keyword");
+
+keywordInput.addEventListener("input", async () => {
+
+  const q = keywordInput.value.trim();
+
+  if (!q) return;
+
+  const res =
+    await fetch(
+      `/customer-suggest?q=${encodeURIComponent(q)}`
+    );
+
+  const data =
+    await res.json();
+
+  console.log(data);
+});
   class="map-btn"
   href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + address + ' Vietnam')}"
   target="_blank"
