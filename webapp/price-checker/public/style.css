@@ -1609,22 +1609,45 @@ body{
 
   font-size:14px;
 }
+.search-wrapper{
+  flex:1;
+  position:relative;
+}
+
 #suggestions{
-  background:#fff;
-  border:1px solid #e5e5e5;
+
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+
+  background:#0f172a;
+
   border-radius:12px;
-  margin-top:6px;
-  max-height:250px;
-  overflow-y:auto;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+  overflow:hidden;
+
+  z-index:999;
+
+  margin-top:5px;
+
+  border:
+  1px solid rgba(255,255,255,.08);
 }
 
 .suggest-item{
-  padding:10px 15px;
-  font-size:14px;
+
+  padding:12px 15px;
+
   cursor:pointer;
+
+  color:white;
 }
 
 .suggest-item:hover{
-  background:#eef6ff;
+
+  background:
+  rgba(56,189,248,.15);
+
+  color:#38bdf8;
 }
