@@ -7,6 +7,7 @@ async function searchCustomer() {
   }
 
   const resultDiv = document.getElementById("result");
+  
   resultDiv.innerHTML = "Loading...";
 
   try {
@@ -45,26 +46,3 @@ async function searchCustomer() {
     resultDiv.innerHTML = `<div class="card">Search Error</div>`;
   }
 }
-window.openMap = async function(address) {
-
-  console.log("CLICK MAP:", address);
-
-  try {
-    const res = await fetch(`/geocode?address=${encodeURIComponent(address)}`);
-    const data = await res.json();
-
-    console.log("GEOCODE RESULT:", data);
-
-    if (!data || !data.lat) {
-      alert("Cannot find location");
-      return;
-    }
-
-    const url = `https://www.google.com/maps?q=${data.lat},${data.lng}`;
-    window.open(url, "_blank");
-
-  } catch (err) {
-    console.log(err);
-    alert("Map error");
-  }
-};
