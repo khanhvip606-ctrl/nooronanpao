@@ -215,15 +215,21 @@ font-weight:600;
 
 <div class="search-box">
 
-<input
-id="keyword"
-placeholder="Customer Code / Name..."
+  <div class="search-wrapper">
 
->
+    <input
+      id="keyword"
+      placeholder="Customer Code / Name..."
+      autocomplete="off"
+    >
 
-<button onclick="searchCustomer()">
-SEARCH
-</button>
+    <div id="suggestions"></div>
+
+  </div>
+
+  <button onclick="searchCustomer()">
+    SEARCH
+  </button>
 
 </div>
 
