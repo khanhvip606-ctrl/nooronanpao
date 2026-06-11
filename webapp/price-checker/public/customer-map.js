@@ -29,10 +29,13 @@ async function searchCustomer() {
           <p><b>Code:</b> ${code}</p>
           <p><b>Address:</b> ${address}</p>
 
-          <button class="map-btn"
-            onclick="openMap('${address.replace(/'/g, "\\'")}')">
-            📍 Open Map
-          </button>
+        <a
+  class="map-btn"
+  href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name + ' ' + address + ' Vietnam')}"
+  target="_blank"
+>
+  📍 Open Map
+</a>
         </div>
       `;
     }).join("");
