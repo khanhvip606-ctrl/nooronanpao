@@ -1614,40 +1614,4 @@ body{
   position:relative;
 }
 
-#suggestions{
 
-  position:absolute;
-  top:100%;
-  left:0;
-  right:0;
-
-  background:#0f172a;
-
-  border-radius:12px;
-
-  overflow:hidden;
-
-  z-index:999;
-
-  margin-top:5px;
-
-  border:
-  1px solid rgba(255,255,255,.08);
-}
-
-.suggest-item{
-
-  padding:12px 15px;
-
-  cursor:pointer;
-
-  color:white;
-}
-
-.suggest-item:hover{
-
-  background:
-  rgba(56,189,248,.15);
-
-  color:#38bdf8;
-}
